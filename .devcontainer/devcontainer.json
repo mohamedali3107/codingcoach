@@ -10,10 +10,14 @@
 				"batisteo.vscode-django",
 				"mongodb.mongodb-vscode",
 				"ms-vscode.vscode-typescript-next",
-				"ms-azuretools.vscode-docker"
+				"ms-azuretools.vscode-docker",
+				"ms-vscode.vscode-remote-extensionpack"
 			]
 		}
 	},
+	"mounts": [
+		"source=ssh-keys,target=/home/vscode/.ssh,type=bind,consistency=cached"
+	  ],
 
 	"dockerComposeFile" : "../docker-compose.yml" , 
 	"service" : "dev" , 
