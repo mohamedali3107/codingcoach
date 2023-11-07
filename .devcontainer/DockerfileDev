@@ -1,6 +1,9 @@
 FROM mcr.microsoft.com/vscode/devcontainers/base
 
 
+RUN apt-get update -y 
+
+RUN apt install -y nodejs npm
 
 #RUN apt-get update -y 
 
