@@ -20,6 +20,8 @@ WORKDIR /app
 #COPY requirements.txt ./
 #RUN pip install -r requirements.txt
 COPY . .
+
+RUN chown -R vscode:vscode .
 # COPY /Users/user1/.ssh/id_rsa.pub /home/vscode/.ssh/id_rsa.pub
 # COPY /Users/user1/.ssh/id_rsa /home/vscode/.ssh/id_rsa.pub 
 
