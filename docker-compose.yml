@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  django:
+    build:
+      context: ./django
+      dockerfile: DockerfileDjango
+    networks:
+      - my-network
+    ports:
+      - "8000:8000"
+
+  node:
+    build:
+      context: ./node
+      dockerfile: DockerfileNode
+    networks:
+      - my-network
+
+  mongo:
+    image: mongo:7.0-rc-jammy
+    restart: always
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+    networks:
+      - my-network
+
+  dev:
+    build:
+      context: ./
+      dockerfile: .devcontainer/dockerfileDev
+    command: sleep infinity
+    networks:
+      - my-network
+
+networks:
+  my-network:
