@@ -5,7 +5,10 @@ RUN apt-get update -y
 
 RUN apt install -y nodejs npm
 
-RUN apt install -yq python3-django 
+RUN apt install -yq python3-django python3-full python3-pip
+
+
+RUN sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 
 #RUN apt-get update -y 
 

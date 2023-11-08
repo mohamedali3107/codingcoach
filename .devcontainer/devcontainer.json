@@ -20,7 +20,7 @@
 	"dockerComposeFile" : "../docker-compose.yml" , 
 	"service" : "dev" , 
 
-	"workspaceFolder" : "/app" , 
+	"workspaceFolder" : "/app"  
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	
 	
