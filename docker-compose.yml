@@ -35,7 +35,11 @@ services:
     command: sleep infinity
     networks:
       - my-network
+    volumes:
+      - dev-data:/app
     
 
 networks:
   my-network:
+volumes:
+  dev-data:

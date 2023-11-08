@@ -20,7 +20,7 @@
 	"dockerComposeFile" : "../docker-compose.yml" , 
 	"service" : "dev" , 
 
-	"workspaceFolder" : "/app"  
+	"workspaceFolder" : "/app"  ,
 	// Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
 	
 	
@@ -29,7 +29,7 @@
 	// "features": {},
 
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
-	// "forwardPorts": [],
+	 "forwardPorts": [27017 , 8000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
 	// "postCreateCommand": "pip3 install --user -r requirements.txt",
