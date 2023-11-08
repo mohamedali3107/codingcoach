@@ -29,19 +29,20 @@ services:
     volumes:
       - dev-data:/app
   
-   db:
+  db:
     image: mongo:latest
     restart: unless-stopped
     volumes:
       - mongodb-data:/data/db
-
-    # Uncomment to change startup options
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: dashboard
+    networks:
+      - my-network
     ports:
       - "27017:27017"
+
 
 
     # Add "forwardPorts": ["27017"] to **devcontainer.json** to forward MongoDB locally.
