@@ -15,9 +15,7 @@
 			]
 		}
 	},
-	"mounts": [
-		"source=ssh-keys,target=/home/vscode/.ssh,type=bind,consistency=cached"
-	  ],
+
 
 	"dockerComposeFile" : "../docker-compose.yml" , 
 	"service" : "dev" , 
