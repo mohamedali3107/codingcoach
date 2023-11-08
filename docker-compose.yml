@@ -17,17 +17,8 @@ services:
     networks:
       - my-network
 
-  mongo:
-    image: mongo:7.0-rc-jammy
-    restart: always
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: example
-    networks:
-      - my-network
-    ports:
-      - "27017:27017"
-
+  
+   
   dev:
     build:
       context: ./
@@ -37,9 +28,31 @@ services:
       - my-network
     volumes:
       - dev-data:/app
+  
+   db:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - mongodb-data:/data/db
+
+    # Uncomment to change startup options
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: root
+      MONGO_INITDB_DATABASE: dashboard
+    ports:
+      - "27017:27017"
+
+
+    # Add "forwardPorts": ["27017"] to **devcontainer.json** to forward MongoDB locally.
+    # (Adding the "ports" property to this file will not forward from a Codespace.)
+
+
+  
     
 
 networks:
   my-network:
 volumes:
   dev-data:
+  mongodb-data:
