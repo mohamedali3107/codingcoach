@@ -80,12 +80,8 @@ DATABASES = {
         'ENGINE': 'djongo',
         'NAME': MONGO_DB_NAME,
         'CLIENT': {
-            'host': 'mongodb',  # Use the service name defined in your Docker Compose file
+            'host': 'mongo',  # Use the service name defined in your Docker Compose file
             'port': 27017,
-            'username': 'root',
-            'password': 'example',
-            'authSource': 'admin',  # MongoDB admin database
-            'authMechanism': 'SCRAM-SHA-256',
         }
     }
 }
