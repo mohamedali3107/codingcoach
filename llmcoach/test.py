@@ -1,59 +1,79 @@
 import openai
 import os
-import chatgpt
 import gradio as gr
 from dotenv import load_dotenv, find_dotenv
-import environ
-env = environ.Env()
-environ.Env.read_env()
 
 _ = load_dotenv(find_dotenv()) # read local .env file
 
 openai.api_key  = os.environ["OPENAI_API_KEY"]
+ 
+def generate_comment(code_error, chatbot_context):
+    # Use the OpenAI ChatGPT to generate a comment on the file changes
 
-
-class CorrecteurDeCode:
-    def __init__(self, openai_api_key="OPENAI_API_KEY"):
-        self.openai_api_key = openai_api_key
-        self.model = OpenAI(openai_api_key)
-
-    def correcteur_code(self, code):
-        # Analyse du code et identification des erreurs
-        # Vous pouvez utiliser des bibliothèques comme `flake8` ou `pycodestyle` pour cela
-        # Pour cet exemple, nous utilizerons une fonction simple
-        errors = ["Erreur 1", "Erreur 2", "Erreur 3"]
-        erreurs_code = [i for i in range(len(code)) for j in range(3) for k in range(i + j + 1) if k >= i and k <= len(code) and code[k - i - j - 1] == code[i - 1] and code[k - i - j - 2] == code[j - 1]]
-        if len(erreurs_code) > 0:
-            return errors[0], errors[1], errors[2]
-        else:
-            return "Aucune erreur trouvée", "Aucune erreur trouvée", "Aucune erreur trouvée"
-
-
-
-def suggestions(code):
-    # Générez des suggestions de code à partir des erreurs identifiées
-    # Vous pouvez utiliser des bibliothèques comme `autopep8` ou `black` pour cela
-    # Pour cet exemple, nous utiliserons une fonction simple
-    suggestions = ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
-    suggestion_code = [i for i in range(len(code)) for j in range(3) for k in range(i + j + 1) if k >= i and k <= len(code) and code[k - i - j - 1] == code[i - 1] and code[k - i - j - 2] == code[j - 1]]
-
-    if len(suggestion_code) > 0:
-        return suggestions[0], suggestions[1], suggestions[2]
-    else:
-        return "Aucune suggestion trouvée", "Aucune suggestion trouvée", "Aucune suggestion trouvée"
-def main():
-    # Create the Gradio interface
-    app = gr.Interface(
-        fn=CorrecteurDeCode,
-        inputs=gr.inputs.Textbox(label="Code Python", name="code"),
-        outputs=["text", "text"]
+    chatbot_context.append(
+      {
+            "role": "user",
+            "content": f"Make a code review of the changes made in this code: {code_error}",
+       }
     )
+    # Retry up to three times
+    retries = 3
+    for attempt in range(retries):
+       try:
+            #response = openai.Completion.create(
+            #model="text-davinci-003",  # Utilise le moteur approprié pour les modèles de chat
+            #prompt=f"Make a code review of the changes made in this code: {code}",
+            #prompt= f"Try to reslove the following error {code_error}. If the input is not an error, say the input is not an error",
+            #max_tokens=150,)  # Ajoutez d'autres paramètres si nécessaire
+        
 
-    # Add a text input for suggestions
-    app.add_input("text", label="Suggestions", name="suggestions")
+           response = openai.ChatCompletion.create(
+                       model="gpt-3.5-turbo",
+                       messages=chatbot_context)
+    
+              
 
-    # Launch the user interface
-    app.launch()
+       except Exception as e:
+             if attempt == retries - 1:
+                   print(f"attempt: {attempt}, retries: {retries}")
+                   raise e  # Raise the error if reached maximum retries
+             else:
+                   print("OpenAI error occurred. Retrying...")
+                   continue
 
-if __name__ == "__main__":
-    main()
+    comment = response.choices[0]
+
+    # Update the chatbot context with the latest response
+    chatbot_context = [
+       {
+             "role": "user",
+                   "content": f"Make a code review of the changes made in this code: {code_error}",
+       },
+       {
+             "role": "assistant",
+             "content": comment,
+       }
+    ]
+
+    return comment
+
+# Initialise le contexte du chatbot
+chatbot_context = []
+
+# Code pour lequel tu veux générer un commentaire
+#code_error = """openai.error.InvalidRequestError: Unrecognized request argument supplied: messages
+#"""
+code_error=  """
+def add_numbers(a, b):
+    return a + b
+"""
+# Appelle la fonction generate_comment
+comment= generate_comment(code_error,chatbot_context)
+
+# Affiche le commentaire généré
+print("Commentaire généré par le chatbot:")
+print(comment)
+# Affiche le contexte mis à jour du chatbot
+print("\nContexte du chatbot mis à jour:")
+print(chatbot_context)
+
