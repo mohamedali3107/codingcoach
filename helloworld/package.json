@@ -9,15 +9,11 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onCommand:workbench.action.terminal.new"
+  ],
   "main": "./out/extension.js",
   "contributes": {
-    "commands": [
-      {
-        "command": "helloworld.helloWorld",
-        "title": "Hello World"
-      }
-    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
