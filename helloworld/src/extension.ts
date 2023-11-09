@@ -12,18 +12,23 @@ export function activate(context: vscode.ExtensionContext) {
 
 	// Use the console to output diagnostic information (console.log) and errors (console.error)
 	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "helloworld" is now active!');
+	console.log('Congratulations, your extension "helloworld" is active!');
 
 	// The command has been defined in the package.json file
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
-	const terminalListener = vscode.window.onDidOpenTerminal((terminal) => {
-        const message = `New terminal created: ${terminal.name}`;
+	const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
+        const message = `New terminal: ${terminal.name}`;
+        showNotification(message);
+	});
+
+	const closeTerminalListener = vscode.window.onDidCloseTerminal((terminal) => {
+        const message = `Terminal closed: ${terminal.name}`;
         showNotification(message);
 	});
 	
 	// Make sure to dispose of the event listener when the extension is deactivated
-    context.subscriptions.push(terminalListener);
+    context.subscriptions.push(openTerminalListener,closeTerminalListener);
 }
 
 // This method is called when your extension is deactivated
