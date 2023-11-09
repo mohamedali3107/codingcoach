@@ -6,16 +6,16 @@ services:
       context: ./dashboard
       dockerfile: DockerfileDjango
     networks:
-      - my-network
+      - codingcoachNet
     ports:
-      - "8000:8000"
+      - 8000:8000
 
   node:
     build:
       context: ./node
       dockerfile: DockerfileNode
     networks:
-      - my-network
+      - codingcoachNet
 
   
    
@@ -25,11 +25,11 @@ services:
       dockerfile: .devcontainer/dockerfileDev
     command: sleep infinity
     networks:
-      - my-network
+      - codingcoachNet
     volumes:
       - dev-data:/app
   
-  db:
+  mongo:
     image: mongo:latest
     restart: unless-stopped
     volumes:
@@ -39,9 +39,21 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: root
       MONGO_INITDB_DATABASE: dashboard
     networks:
-      - my-network
+      - codingcoachNet
     ports:
-      - "27017:27017"
+      - 27017:27017
+  
+  mongo-express:
+    image: mongo-express 
+    restart : always 
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=root 
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=example
+      - ME_CONFIG_MONGODB_URL=mongodb://root:example@mongo:27017/ 
+ 
+
 
 
 
@@ -53,7 +65,7 @@ services:
     
 
 networks:
-  my-network:
+  codingcoachNet:
 volumes:
   dev-data:
   mongodb-data:
