@@ -113,18 +113,7 @@ DB_NAME     = os.getenv('DB_NAME'     , None)
 DB_CUSTOM =   os.getenv('DB_CUSTOM'   , None)
 
 
-if  DB_CUSTOM and DB_ENGINE and DB_NAME and DB_USERNAME : 
-    DATABASES = { 
-      'default': {
-        'ENGINE'  : DB_ENGINE, 
-        'NAME'    : DB_NAME,
-        'USER'    : DB_USERNAME,
-        'PASSWORD': DB_PASS,
-        'HOST'    : DB_HOST,
-        'PORT'    : DB_PORT,
-        }, 
-    }
-elif DB_ENGINE and DB_NAME and DB_USERNAME:
+if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {
         'ENGINE'  : 'django.db.backends.' + DB_ENGINE, 
