@@ -1,6 +1,6 @@
 {
-  "name": "helloworld",
-  "displayName": "HelloWorld",
+  "name": "notification",
+  "displayName": "Notification",
   "description": "",
   "version": "0.0.1",
   "engines": {
