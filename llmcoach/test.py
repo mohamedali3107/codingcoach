@@ -1,59 +1,61 @@
 import openai
+import gradio as gr
 import os
-import chatgpt
 import gradio as gr
 from dotenv import load_dotenv, find_dotenv
-import environ
-env = environ.Env()
-environ.Env.read_env()
 
 _ = load_dotenv(find_dotenv()) # read local .env file
 
 openai.api_key  = os.environ["OPENAI_API_KEY"]
+def generate_comment(code_error, chatbot_context):
+    chatbot_context.append({
+        "role": "user",
+        "content": f"Your are a helpful chatbot that can assist students in their learning. Your job is to reslove the  error {code_error} given by the student. If the input is a code, make a complete code review for the code. Try to give an answer for any question or request given by the student.",
+    })
+    
+    retries = 3
+    for attempt in range(retries):
+        try:
+            response = openai.ChatCompletion.create(
+                model="gpt-3.5-turbo",
+                messages=chatbot_context
+            )
+            break
+        except Exception as e:
+            if attempt == retries - 1:
+                print(f"Attempt: {attempt}, Retries: {retries}")
+                raise e
+            else:
+                print("OpenAI error occurred. Retrying...")
+                continue
 
+    comment = response.choices[0].message['content']
 
-class CorrecteurDeCode:
-    def __init__(self, openai_api_key="OPENAI_API_KEY"):
-        self.openai_api_key = openai_api_key
-        self.model = OpenAI(openai_api_key)
+    chatbot_context = [
+        {"role": "user", "content": f"Your are a helpful chatbot that can assist students in their learning. Your job is to reslove the  error {code_error} given by the student. If the input is a code, make a complete code review for the code. Try to give an answer for any question or request given by the student. "},
+        {"role": "assistant", "content": comment},
+    ]
 
-    def correcteur_code(self, code):
-        # Analyse du code et identification des erreurs
-        # Vous pouvez utiliser des bibliothèques comme `flake8` ou `pycodestyle` pour cela
-        # Pour cet exemple, nous utilizerons une fonction simple
-        errors = ["Erreur 1", "Erreur 2", "Erreur 3"]
-        erreurs_code = [i for i in range(len(code)) for j in range(3) for k in range(i + j + 1) if k >= i and k <= len(code) and code[k - i - j - 1] == code[i - 1] and code[k - i - j - 2] == code[j - 1]]
-        if len(erreurs_code) > 0:
-            return errors[0], errors[1], errors[2]
-        else:
-            return "Aucune erreur trouvée", "Aucune erreur trouvée", "Aucune erreur trouvée"
+    return comment, chatbot_context
 
+def gradio_interface(input_data, chatbot_context):
+    # The input_data argument will contain the user's input
+    comment, chatbot_context = generate_comment(input_data, [])
 
+    return comment
 
-def suggestions(code):
-    # Générez des suggestions de code à partir des erreurs identifiées
-    # Vous pouvez utiliser des bibliothèques comme `autopep8` ou `black` pour cela
-    # Pour cet exemple, nous utiliserons une fonction simple
-    suggestions = ["Suggestion 1", "Suggestion 2", "Suggestion 3"]
-    suggestion_code = [i for i in range(len(code)) for j in range(3) for k in range(i + j + 1) if k >= i and k <= len(code) and code[k - i - j - 1] == code[i - 1] and code[k - i - j - 2] == code[j - 1]]
+gr.ChatInterface(
+    fn=gradio_interface,
+    chatbot=gr.Chatbot(height=300),
+    textbox=gr.Textbox(placeholder="Ask me a question", container=False, scale=7),
+    theme="soft",
+    examples=["Hello", "Am I cool?"],
+    cache_examples=True,
+    retry_btn=None,
+    undo_btn="Delete Previous",
+    clear_btn="Clear",
+    title="Coding_Coach",
+    description="Hello, I am your Coding_Coach.",
+).launch()
 
-    if len(suggestion_code) > 0:
-        return suggestions[0], suggestions[1], suggestions[2]
-    else:
-        return "Aucune suggestion trouvée", "Aucune suggestion trouvée", "Aucune suggestion trouvée"
-def main():
-    # Create the Gradio interface
-    app = gr.Interface(
-        fn=CorrecteurDeCode,
-        inputs=gr.inputs.Textbox(label="Code Python", name="code"),
-        outputs=["text", "text"]
-    )
-
-    # Add a text input for suggestions
-    app.add_input("text", label="Suggestions", name="suggestions")
-
-    # Launch the user interface
-    app.launch()
-
-if __name__ == "__main__":
-    main()
+#gr.ChatInterface(gradio_interface).launch()
