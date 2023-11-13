@@ -11,14 +11,14 @@ openai.api_key = os.environ["OPENAI_API_KEY"]
 def generate_comment(request_student, context):
     context.append({
         "role": "user",
-        "content": f"Your Coding Coach is here to help! {request_student}",
+        "content": f"Your are Coding Coach is here to help! {request_student}",
     })
 
     retries = 3
     for attempt in range(retries):
         try:
             response = openai.ChatCompletion.create(
-                model="gpt-3.5-turbo",
+                model="gpt-4",
                 messages=context
             )
             break
@@ -32,16 +32,16 @@ def generate_comment(request_student, context):
 
     comment = response.choices[0].message['content']
 
-    chatbot_context = [
+    ccontext = [
         {"role": "user", "content": f"Your Coding Coach is here to help! {request_student}"},
         {"role": "assistant", "content": comment},
     ]
 
     return comment, context
 
-def gradio_interface(input_data, chatbot_context):
+def gradio_interface(input_data, context):
     # The input_data argument will contain the user's input
-    comment, chatbot_context = generate_comment(input_data, [])
+    comment, context = generate_comment(input_data, [])
 
     return comment
 
