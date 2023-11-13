@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    'django_cas_ng', 
     "home",
 
     # Tooling Dynamic_DT
@@ -75,6 +75,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_cas_ng.middleware.CASMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -199,10 +200,21 @@ API_GENERATOR = {
     'product'  : "home.models.Product",
 }
 
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',  # Add this line
+]
+
+CAS_SERVER_URL = "https://cas.cloud.centralesupelec.fr/cas/login"
+CAS_LOGOUT_COMPLETELY = True
+CAS_VERSION = '3'
 ########################################
