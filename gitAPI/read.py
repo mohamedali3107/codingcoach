@@ -18,11 +18,16 @@ def compare_branches(project):
 
 def warning_message(L):
     s = ''
-    for name, ahead_by, behind_by in L:
+    for branch, ahead_by, behind_by in L:
         if ahead_by >= 10:
-            s += f'{name} is ahead of main by {ahead_by} commits, consider merging\n'
+            s += f'''{branch} is ahead of main by {ahead_by} commits, consider merging:'''
         if behind_by >= 10:
-            s += f'{name} is behind main by {behind_by} commits, consider merging\n'''
+            s += f'''{branch} is behind main by {behind_by} commits, consider rebasing:
+    git checkout main
+    git pull
+    git checkout {branch}
+    git rebase main
+    '''
     return s
 
 print(warning_message(compare_branches(project)))
