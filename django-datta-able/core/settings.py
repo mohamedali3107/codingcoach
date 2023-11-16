@@ -56,7 +56,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_cas_ng', 
     "home",
-    "tailwindcss",
+    "tailwind",
+    "theme",
+
 
     # Tooling Dynamic_DT
     'django_dyn_dt',             # <-- NEW: Dynamic_DT
@@ -115,10 +117,6 @@ DB_PORT     = os.getenv('DB_PORT'     , None)
 DB_NAME     = os.getenv('DB_NAME'     , None)
 DB_CUSTOM =   os.getenv('DB_CUSTOM'   , None)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
 if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {
