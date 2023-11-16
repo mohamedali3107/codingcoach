@@ -10,7 +10,6 @@ RUN apt install -yq python3-django python3-full python3-pip
 
 RUN sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 RUN python3 -m pip install djongo 
-RUN pip3 install -r django-datta-able/requirements.txt 
 RUN apt install -yq pkg-config libmariadb-dev 
 RUN pip3 install mysqlclient 
 
@@ -37,6 +36,7 @@ RUN chown -R vscode:vscode .
 # COPY /Users/user1/.ssh/id_rsa.pub /home/vscode/.ssh/id_rsa.pub
 # COPY /Users/user1/.ssh/id_rsa /home/vscode/.ssh/id_rsa.pub 
 
+RUN pip3 install -r django-datta-able/requirements.txt 
 
 EXPOSE 8000
 EXPOSE 27017
