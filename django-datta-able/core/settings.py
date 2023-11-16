@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'django_cas_ng', 
     "home",
+    "tailwindcss",
 
     # Tooling Dynamic_DT
     'django_dyn_dt',             # <-- NEW: Dynamic_DT
@@ -218,4 +219,16 @@ AUTHENTICATION_BACKENDS = [
 CAS_SERVER_URL = "https://cas.cloud.centralesupelec.fr/cas/login"
 CAS_LOGOUT_COMPLETELY = True
 CAS_VERSION = '3'
+
+
+
+# BASE_DIR = Path(__file__).resolve().parent
+
+TAILWINDCSS_CLI_FILE = BASE_DIR / 'tailwindcss-linux-x64'
+TAILWINDCSS_CONFIG_FILE = BASE_DIR / 'tailwind.config.js'
+
+# For file mode
+TAILWINDCSS_OUTPUT_FILE = 'style.css'
+
+
 ########################################

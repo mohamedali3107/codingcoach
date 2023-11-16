@@ -17,3 +17,5 @@ gunicorn==21.2.0
 # DB Layer
 # psycopg2-binary
 # mysqlclient
+
+django-tailwindcss==0.4.0
