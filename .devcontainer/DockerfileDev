@@ -9,7 +9,7 @@ RUN apt install -yq python3-django python3-full python3-pip
 
 
 RUN sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
-
+RUN python3 -m pip install djongo 
 #RUN apt-get update -y 
 
 #RUN  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key |  gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
@@ -35,4 +35,5 @@ RUN chown -R vscode:vscode .
 
 
 EXPOSE 8000
+EXPOSE 27017
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
