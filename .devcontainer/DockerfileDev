@@ -10,6 +10,10 @@ RUN apt install -yq python3-django python3-full python3-pip
 
 RUN sudo rm /usr/lib/python3.11/EXTERNALLY-MANAGED
 RUN python3 -m pip install djongo 
+RUN pip3 install -r django-datta-able/requirements.txt 
+RUN apt install -yq pkg-config libmariadb-dev 
+RUN pip3 install mysqlclient 
+
 #RUN apt-get update -y 
 
 #RUN  curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key |  gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
