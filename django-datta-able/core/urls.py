@@ -16,12 +16,18 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework.authtoken.views import obtain_auth_token # <-- NEW
+import django_cas_ng.views
+
 
 urlpatterns = [
     path('', include('home.urls')),
+    path('cas/login', django_cas_ng.views.LoginView.as_view(), name='cas_ng_login'),
+    path('cas/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout'),
     path("admin/", admin.site.urls),
     path("", include('admin_datta.urls')),
     path('', include('django_dyn_dt.urls')), # <-- NEW: Dynamic_DT Routing   
+    path("dashboard" , include('dashboard.urls') ) , 
+
 ]
 
 # Lazy-load on routing is needed

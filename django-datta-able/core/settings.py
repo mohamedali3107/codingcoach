@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    'django_cas_ng', 
     "home",
 
     # Tooling Dynamic_DT
@@ -75,17 +75,19 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_cas_ng.middleware.CASMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
 
 HOME_TEMPLATES      = os.path.join(BASE_DIR, 'templates') 
-TEMPLATE_DIR_DATATB = os.path.join(BASE_DIR, "django_dyn_dt/templates") # <-- NEW: Dynamic_DT
+DASHBOARD_TEMPLATES = os.path.join(HOME_TEMPLATES , 'dashboard') 
+
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [HOME_TEMPLATES, TEMPLATE_DIR_DATATB],                  # <-- UPD: Dynamic_DT
+        "DIRS": [HOME_TEMPLATES , DASHBOARD_TEMPLATES],                  
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -112,19 +114,7 @@ DB_PORT     = os.getenv('DB_PORT'     , None)
 DB_NAME     = os.getenv('DB_NAME'     , None)
 DB_CUSTOM =   os.getenv('DB_CUSTOM'   , None)
 
-
-if  DB_CUSTOM and DB_ENGINE and DB_NAME and DB_USERNAME : 
-    DATABASES = { 
-      'default': {
-        'ENGINE'  : DB_ENGINE, 
-        'NAME'    : DB_NAME,
-        'USER'    : DB_USERNAME,
-        'PASSWORD': DB_PASS,
-        'HOST'    : DB_HOST,
-        'PORT'    : DB_PORT,
-        }, 
-    }
-elif DB_ENGINE and DB_NAME and DB_USERNAME:
+if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {
         'ENGINE'  : 'django.db.backends.' + DB_ENGINE, 
@@ -211,10 +201,21 @@ API_GENERATOR = {
     'product'  : "home.models.Product",
 }
 
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',  # Add this line
+]
+
+CAS_SERVER_URL = "https://cas.cloud.centralesupelec.fr/cas/login"
+CAS_LOGOUT_COMPLETELY = True
+CAS_VERSION = '3'
 ########################################
