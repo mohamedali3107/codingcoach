@@ -7,7 +7,7 @@
         <div class="b-bg">
           <i class="feather icon-trending-up"></i>
         </div>
-        <span class="b-title">Datta Able</span>
+        <span class="b-title">Coding coach</span>
       </a>
       <a class="mobile-menu" id="mobile-collapse" href="javascript:"><span></span></a>
     </div>
@@ -28,11 +28,7 @@
         <li class="nav-item {% if 'tables' in segment %}active{% endif %}">
           <a href="{% url 'tables' %}" class="nav-link "><span class="pcoded-micon"><i
                 class="feather icon-server text-c-green"></i></span><span class="pcoded-mtext">Dynamic Tables</span></a>
-        </li>
-        <li class="nav-item">
-          <a target="_blank" href="/api/product/" class="nav-link "><span class="pcoded-micon"><i
-                class="feather icon-zap text-c-green"></i></span><span class="pcoded-mtext">Generated API</span></a>
-        </li>
+        </li> 
 
         {% if not request.user.is_authenticated %}
         <li
@@ -110,16 +106,8 @@
           <a href="{% url 'basic_tables' %}" class="nav-link "><span class="pcoded-micon"><i
                 class="feather icon-server"></i></span><span class="pcoded-mtext">Table</span></a>
         </li>
-        <li class="nav-item pcoded-menu-caption">
-          <label>Chart & Maps</label>
-        </li>
-        <li data-username="Charts Morris" class="nav-item {% if 'morris_chart' in segment %}active{% endif %}"><a href="{% url 'morris_chart' %}" class="nav-link "><span
-              class="pcoded-micon"><i class="feather icon-pie-chart"></i></span><span
-              class="pcoded-mtext">Chart</span></a>
-        </li>
-        <li data-username="Maps Google" class="nav-item {% if 'google_maps' in segment %}active{% endif %}"><a href="{% url 'google_maps' %}" class="nav-link "><span
-              class="pcoded-micon"><i class="feather icon-map"></i></span><span class="pcoded-mtext">Maps</span></a>
-        </li>
+  
+  
         <li class="nav-item pcoded-menu-caption">
           <label>Pages</label>
         </li>

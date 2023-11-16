@@ -54,8 +54,9 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-
+    'django_cas_ng', 
     "home",
+    "tailwindcss",
 
     # Tooling Dynamic_DT
     'django_dyn_dt',             # <-- NEW: Dynamic_DT
@@ -75,17 +76,19 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    'django_cas_ng.middleware.CASMiddleware',
 ]
 
 ROOT_URLCONF = "core.urls"
 
 HOME_TEMPLATES      = os.path.join(BASE_DIR, 'templates') 
-TEMPLATE_DIR_DATATB = os.path.join(BASE_DIR, "django_dyn_dt/templates") # <-- NEW: Dynamic_DT
+DASHBOARD_TEMPLATES = os.path.join(HOME_TEMPLATES , 'dashboard') 
+
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [HOME_TEMPLATES, TEMPLATE_DIR_DATATB],                  # <-- UPD: Dynamic_DT
+        "DIRS": [HOME_TEMPLATES , DASHBOARD_TEMPLATES],                  
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -112,7 +115,10 @@ DB_PORT     = os.getenv('DB_PORT'     , None)
 DB_NAME     = os.getenv('DB_NAME'     , None)
 DB_CUSTOM =   os.getenv('DB_CUSTOM'   , None)
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
 if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {
@@ -200,10 +206,33 @@ API_GENERATOR = {
     'product'  : "home.models.Product",
 }
 
+
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.TokenAuthentication',
     ],
 }
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',  # Add this line
+]
+
+CAS_SERVER_URL = "https://cas.cloud.centralesupelec.fr/cas/login"
+CAS_LOGOUT_COMPLETELY = True
+CAS_VERSION = '3'
+
+
+
+# BASE_DIR = Path(__file__).resolve().parent
+
+TAILWINDCSS_CLI_FILE = BASE_DIR / 'tailwindcss-linux-x64'
+TAILWINDCSS_CONFIG_FILE = BASE_DIR / 'tailwind.config.js'
+
+# For file mode
+TAILWINDCSS_OUTPUT_FILE = 'style.css'
+
+
 ########################################
