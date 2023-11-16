@@ -1,0 +1,27 @@
+# Ignore node_modules directory as it contains dependencies
+node_modules/
+
+# Ignore compiled output
+out/
+dist/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+# Ignore user settings and local configurations
+.vscode/
+.env
+
+# Ignore sensitive or private information (such as API keys) in a separate file
+secrets.env
+
+# Ignore package-lock.json or yarn.lock file if managing dependencies
+package-lock.json
+yarn.lock
+
+# Ignore any specific build or generated files or directories
+# Add specific files or folders that should not be committed
+
+# Ignore macOS system files
+.DS_Store
