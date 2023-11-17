@@ -57,7 +57,8 @@ export function gitStatusCommand(output: String): Array<any> {
             let file = lines[i+j];
             while (file !== "" && i+j < lines_number) {
                 if (!file.includes("(use")) {
-                    let file_split = file.split(" ")
+                    let file_split = file.split("\t")
+                    file_split = file_split[file_split.length - 1].split(" ")
                     changes_to_be_committed.push(file_split[file_split.length - 1]);
                 }
                 j += 1;
@@ -69,7 +70,8 @@ export function gitStatusCommand(output: String): Array<any> {
             let file = lines[i+j];
             while (file !== "" && i+j < lines_number) {
                 if (!file.includes("(use")) {
-                    let file_split = file.split(" ");
+                    let file_split = file.split("\t")
+                    file_split = file_split[file_split.length - 1].split(" ")
                     changes_not_staged.push(file_split[file_split.length - 1]);
                 }
                 j += 1;
@@ -81,8 +83,7 @@ export function gitStatusCommand(output: String): Array<any> {
             let file = lines[i+j];
             while (file !== "" && i+j < lines_number) {
                 if (file !== '\tgit_output_temp.txt' && !file.includes("(use")) {
-                    let file_split = file.split(" ");
-                    console.log("File:", file_split)
+                    let file_split = (file[0] !== "\t" ? file.split(" ") : file.split("\t"));
                     untracked_files.push(file_split[file_split.length - 1]);
                 }
                 j += 1;
@@ -98,3 +99,5 @@ export function gitStatusCommand(output: String): Array<any> {
     "Untracked files:", untracked_files]
 
 }
+
+//test
