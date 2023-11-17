@@ -16,6 +16,21 @@ def compare_branches(project):
             L.append((branch.name, ahead_by, behind_by))
     return L
 
+def count_big_commits(project):
+    big_commits = 0
+    for commit in project.commits.list(get_all=False):
+        size = 0
+        for diff in commit.diff(get_all=False):
+            lines = diff['diff'].split('\n')
+            for line in lines:
+                if line != '' and (line[0] == '-' or line[0] == '+'):
+                    size += 1
+        if size > 40:
+            print(commit.message)
+            big_commits += 1
+    return big_commits
+
+
 def warning_message(L):
     s = ''
     for branch, ahead_by, behind_by in L:
@@ -36,7 +51,7 @@ def warning_message(L):
 '''
     return s
 
-print(warning_message(compare_branches(project)))
+#print(warning_message(compare_branches(project)))
 
 #for name, ahead_by, behind_by in compare_branches(project):
 #    print(f"{name} is ahead by {ahead_by} commits and behind by {behind_by} commits compared to main.")
