@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "dashboard",
     'django_cas_ng', 
     "home",
     "tailwindcss",
@@ -115,10 +116,6 @@ DB_PORT     = os.getenv('DB_PORT'     , None)
 DB_NAME     = os.getenv('DB_NAME'     , None)
 DB_CUSTOM =   os.getenv('DB_CUSTOM'   , None)
 
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/main
 if DB_ENGINE and DB_NAME and DB_USERNAME:
     DATABASES = { 
       'default': {

@@ -19,3 +19,4 @@ gunicorn==21.2.0
 # mysqlclient
 
 django-tailwindcss==0.4.0
+django-cas-ng==5.0.1
