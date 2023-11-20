@@ -3,6 +3,17 @@ import gitlab
 gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token='glpat-fULiHV8-x78CbwdNsz6w')
 project = gl.projects.get('amin.belfkira/game2048')
 
+def get_most_ahead(project):
+    branches = project.branches.list()
+    max_ahead = 0
+    for branch in branches:
+        if branch.name != 'main':
+            ahead_by = len(project.repository_compare('main', branch.name)['commits'])
+            if ahead_by > max_ahead:
+                max_ahead = ahead_by
+                most_ahead = branch.name
+    return most_ahead
+
 def compare_branches(project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
