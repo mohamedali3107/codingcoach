@@ -1,7 +1,7 @@
 import gitlab
 
-gl = gitlab.Gitlab(url = 'https://gitlab.paris-digital-lab.com', private_token='glpat-qsH-B46AAzU8vCDw1yV3')
-project = gl.projects.get('centralesupelec-fall2023-p2/codingcoach')
+gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token='glpat-fULiHV8-x78CbwdNsz6w')
+project = gl.projects.get('amin.belfkira/game2048')
 
 def compare_branches(project):
     '''
