@@ -26,7 +26,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('admin_datta.urls')),
     path('', include('django_dyn_dt.urls')), # <-- NEW: Dynamic_DT Routing   
-    path("dashboard" , include('dashboard.urls') ) , 
+    path("dashboard/" , include('dashboard.urls' , namespace='dashboard' ) ) , 
 
 ]
 

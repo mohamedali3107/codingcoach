@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "dashboard",
     'django_cas_ng', 
     "home",
     "tailwind",
@@ -215,7 +216,7 @@ REST_FRAMEWORK = {
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-    'django_cas_ng.backends.CASBackend',  # Add this line
+    #'django_cas_ng.backends.CASBackend',  # Add this line
 ]
 
 CAS_SERVER_URL = "https://cas.cloud.centralesupelec.fr/cas/login"

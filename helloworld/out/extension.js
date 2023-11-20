@@ -23,34 +23,11 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deactivate = exports.activate = exports.executeGitCommandAndGetOutput = void 0;
+exports.deactivate = exports.activate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = __importStar(require("vscode"));
-const fs = __importStar(require("fs"));
-function showNotification(message) {
-    vscode.window.showInformationMessage(message);
-}
-async function executeGitCommandAndGetOutput(command, terminal, duration) {
-    // Check if there's an active workspace folder
-    const activeWorkspace = vscode.workspace.workspaceFolders?.[0];
-    if (!activeWorkspace) {
-        throw new Error('No active workspace found.');
-    }
-    // Generate a temporary file path within the workspace folder to store the command output
-    const tempFilePath = vscode.Uri.joinPath(activeWorkspace.uri, 'git_output_temp.txt').fsPath;
-    // Run the Git command in the terminal
-    terminal.sendText(`${command} > ${tempFilePath}`);
-    // Wait for some time to collect the output (adjust this time according to your command's execution time)
-    await new Promise(resolve => setTimeout(resolve, duration)); // Wait for 2 seconds (adjust as needed)
-    // Read the contents of the temporary file (command output)
-    const output = fs.readFileSync(tempFilePath, 'utf-8');
-    // Remove the temporary file
-    fs.unlinkSync(tempFilePath);
-    // Return the captured output
-    return output;
-}
-exports.executeGitCommandAndGetOutput = executeGitCommandAndGetOutput;
+const git_notification_1 = require("./tools/git-notification");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -61,11 +38,15 @@ function activate(context) {
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
         const message = `Remember to run the command "script" in the new terminal`;
-        showNotification(message);
+        (0, git_notification_1.showNotification)(message);
         terminals.push(terminal);
         // Execute a Git command in the terminal and retrieve the output
-        executeGitCommandAndGetOutput("git status", terminal, 2000)
-            .then((value) => { (console.log("Out:", value)); })
+        (0, git_notification_1.executeGitCommandAndGetOutput)("git status", terminal, 5000)
+            .then((value) => {
+            for (const line of (0, git_notification_1.gitStatusCommand)(value)) {
+                console.log(line);
+            }
+        })
             .catch((e) => {
             console.log('Erreur', e);
         });
@@ -79,7 +60,7 @@ function activate(context) {
                 if (choice === 'Yes') {
                     // User confirmed, close the terminal
                     const closeMessage = `Terminal closed`;
-                    showNotification(closeMessage);
+                    (0, git_notification_1.showNotification)(closeMessage);
                     // Remove the closed terminal from the array
                     terminals = terminals.filter((t) => t !== closedTerminal);
                 }
