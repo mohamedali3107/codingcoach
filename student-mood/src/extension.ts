@@ -1,7 +1,10 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { showNotification } from "./tools/notification";
+import { askStudentMood } from "./tools/notification";
+import { executeGitCommandAndGetOutput } from "./tools/execute-command";
+import { makePostRequest } from "./tools/request"
+import { ConsoleReporter } from '@vscode/test-electron';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -15,17 +18,29 @@ export function activate(context: vscode.ExtensionContext) {
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
     
-    let terminals: vscode.Terminal[] = [];
+    let terminals: vscode.Terminal[] = []; 
+
     
     // Register the terminal open event listener
-    const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
-        const message = `What is your mood today?`;
+    const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
 
-        showNotification(message, ['\u{1F603}','\u{1F610}','\u{1F641}', '\u{1F62D}'])
-            .then(mood => console.log("Mood:",mood))
-            .catch((e) => console.log(e));
+        // Get the mood of the student
+        const mood: string[] = await askStudentMood()
+
+        console.log(mood)
+
+        // Get the email of the user
+        const email: string = await executeGitCommandAndGetOutput("git config user.email", terminal, 5000)
+        
+        console.log(email)
+
+        // POST request: send the mood of the student
+        const response = makePostRequest([mood, email]);
+
+        console.log(response)
 
         terminals.push(terminal);
+
     });
 
     context.subscriptions.push(openTerminalListener);
