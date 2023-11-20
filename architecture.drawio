@@ -196,7 +196,7 @@
                 <mxCell id="11" value="gitAPI" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;fontColor=#ffffff;strokeColor=#2D7600;" parent="63" vertex="1">
                     <mxGeometry x="50" y="20" width="120" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="- get_most_ahead&lt;br&gt;- get_most_behind&lt;br&gt;- get_branch_number&lt;br&gt;- get_last_PR&amp;nbsp;&lt;br&gt;- rate_commits(size , message , freq )&amp;nbsp;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="63" vertex="1">
+                <mxCell id="12" value="- get_most_ahead&lt;br&gt;- get_most_behind&lt;br&gt;- get_branch_number&lt;br&gt;- get_last_PR&amp;nbsp;&lt;br&gt;- rate_commits( )&amp;nbsp;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="63" vertex="1">
                     <mxGeometry x="50" y="65" width="140" height="140" as="geometry"/>
                 </mxCell>
                 <mxCell id="65" value="" style="endArrow=classic;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="27" target="57" edge="1">
