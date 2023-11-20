@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
 
 from .forms import CoachCreationForm, SignUpForm, TeamCreationForm
+from .models import TeamMood
 # Create your views here.
 
 def index(request):
@@ -60,3 +61,5 @@ def signup(request):
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
+
+

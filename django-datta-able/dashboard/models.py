@@ -15,12 +15,33 @@ class CoachTableManager(BaseUserManager):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         return self.create_user(email, username, password, **extra_fields)
+    
+
+class Utilisateur(models.Model):
+    id = models.AutoField(primary_key=True)
+    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=30, unique=True)
+
+    def __str__(self):
+        return self.username
+    
+
+class TeamTable(models.Model):
+    teamId = models.AutoField(primary_key=True)
+    teamName = models.CharField(max_length=255, unique=True)
+    teamGitlabAccessToken = models.CharField(max_length=255)
+    users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
+
+    def __str__(self):
+        return self.teamName
+
 
 class CoachTable(AbstractBaseUser):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
     username = models.CharField(max_length=30, unique=True)
     password = models.CharField(max_length=128)  # Utilisez plutôt models.PasswordField()
+    teams = models.ManyToManyField(TeamTable, related_name='teams', blank=True)
     
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -33,22 +54,6 @@ class CoachTable(AbstractBaseUser):
     def __str__(self):
         return self.username
 
-class Utilisateur(models.Model):
-    id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True)
-    username = models.CharField(max_length=30, unique=True)
-
-    def __str__(self):
-        return self.username
-
-class TeamTable(models.Model):
-    teamId = models.AutoField(primary_key=True)
-    teamName = models.CharField(max_length=255, unique=True)
-    teamGitlabAccessToken = models.CharField(max_length=255)
-    users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
-
-    def __str__(self):
-        return self.teamName
 
 class TeamMood(models.Model):
     teams = models.ManyToManyField(TeamTable, related_name='moods')
