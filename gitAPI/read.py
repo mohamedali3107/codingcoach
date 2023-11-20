@@ -48,8 +48,8 @@ def compare_branches(project):
             L.append((branch.name, ahead_by, behind_by))
     return L
 
-def count_big_commits(project):
-    big_commits = 0
+def rate_commits(project):
+    malus = 0
     for commit in project.commits.list(get_all=False):
         size = 0
         for diff in commit.diff(get_all=False):
@@ -59,8 +59,8 @@ def count_big_commits(project):
                     size += 1
         if size > 40:
             print(commit.message)
-            big_commits += 1
-    return big_commits
+            malus += min((size - 30)/30, 1)
+    return 20 - malus
 
 
 def warning_message(L):
