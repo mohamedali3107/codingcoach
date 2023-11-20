@@ -25,6 +25,9 @@ def get_most_behind(project):
                 most_behind = branch.name
     return most_behind
 
+def get_branch_number(project):
+    return len(project.branches.list())
+
 def compare_branches(project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
