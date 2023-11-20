@@ -28,6 +28,13 @@ def get_most_behind(project):
 def get_branch_number(project):
     return len(project.branches.list())
 
+def get_last_PR(project): # untested because nobody does PRs
+    merge_requests = project.mergerequests.list()
+    if len(merge_requests) == 0:
+        return None
+    merge_requests.sort(key=lambda x: x.created_at, reverse=True)
+    return merge_requests[0]
+
 def compare_branches(project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
