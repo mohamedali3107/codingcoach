@@ -14,6 +14,17 @@ def get_most_ahead(project):
                 most_ahead = branch.name
     return most_ahead
 
+def get_most_behind(project):
+    branches = project.branches.list()
+    max_behind = 0
+    for branch in branches:
+        if branch.name != 'main':
+            behind_by = len(project.repository_compare(branch.name, 'main')['commits'])
+            if behind_by > max_behind:
+                max_behind = behind_by
+                most_behind = branch.name
+    return most_behind
+
 def compare_branches(project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
