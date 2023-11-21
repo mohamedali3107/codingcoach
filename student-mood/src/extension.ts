@@ -25,17 +25,23 @@ export function activate(context: vscode.ExtensionContext) {
     const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
 
         // Get the mood of the student
-        const mood: string[] = await askStudentMood()
+        const mood = await askStudentMood()
 
         console.log(mood)
+        const mood_integer = mood[0]
+        const message = mood[1]
 
         // Get the email of the user
         const email: string = await executeGitCommandAndGetOutput("git config user.email", terminal, 5000)
         
-        console.log(email)
+        console.log("Mood Integer:", mood_integer);
 
         // POST request: send the mood of the student
-        const response = makePostRequest([mood, email]);
+        const response = makePostRequest( {
+            "moodLevel": mood_integer,
+            "message": message,
+            "email": email
+        });
 
         console.log(response)
 

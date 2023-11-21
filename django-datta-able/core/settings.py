@@ -233,5 +233,5 @@ TAILWINDCSS_CONFIG_FILE = BASE_DIR / 'tailwind.config.js'
 # For file mode
 TAILWINDCSS_OUTPUT_FILE = 'style.css'
 
-
+APPEND_SLASH=False
 ########################################

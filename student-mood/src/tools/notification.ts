@@ -1,3 +1,4 @@
+import { ConsoleReporter } from '@vscode/test-electron';
 import * as vscode from 'vscode';
 
 export async function showNotification(message: string, moods: string[]) {
@@ -26,7 +27,19 @@ export async function askStudentMood() {
         .then((phrase) => {mood_phrase = phrase})
         .catch((e) => console.log(e));
 
-    return [mood_emoji, mood_phrase]
+    let mood_integer = 0
+
+    if (mood_emoji === '\u{1F603}') {
+            mood_integer = 1
+    } else if (mood_emoji === '\u{1F610}') {
+        mood_integer = 2
+    } else if (mood_emoji === '\u{1F641}') {
+            mood_integer = 3
+    } else {
+            mood_integer = 4
+      }
+
+    return [mood_integer, mood_phrase]
 
 }
 

@@ -1,15 +1,11 @@
 import * as vscode from 'vscode';
 import axios from 'axios';
 
-export async function makePostRequest(value: any) {
-    const url = 'http://localhost:8000/dashboard/sendMood'; // Server's URL
+export async function makePostRequest(values: any) {
+    const url = 'http://localhost:8000/dashboard/sendMood/'; // Server's URL
 
     try {
-        const response = await axios.post(url, value, {
-            headers: {
-                'Content-Type': 'application/json' // Set content type to JSON
-            }
-        });
+        const response = await axios.post(url, values);
 
         // Handle the response
         console.log('Response:', response.data);

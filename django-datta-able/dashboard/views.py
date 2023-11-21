@@ -3,9 +3,14 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from datetime import date, datetime
 
 from .forms import CoachCreationForm, SignUpForm, TeamCreationForm
-from .models import TeamMood
+from .models import TeamMood, TeamTable, Utilisateur
+from .serializers import MoodSerializer
 # Create your views here.
 
 def index(request):
@@ -61,5 +66,30 @@ def signup(request):
         form = SignUpForm()
 
     return render(request, 'signup.html', {'form': form})
+
+class MoodView(APIView):
+    def post(self, request, format=None):
+        serializer = MoodSerializer(data=request.data)
+
+        if serializer.is_valid():
+            # Valid data
+            moodLevel = serializer.validated_data['moodLevel']
+            message = serializer.validated_data['message']
+            email = serializer.validated_data['email']
+
+            user = Utilisateur.objects.filter(email=email).first()
+
+            team = user.teams.all()
+
+            mood = TeamMood.objects.create(timeStamp=datetime.now(), moodLevel=moodLevel, message=message)
+            mood.teams.set(team)
+
+            return Response({'status': 'success',
+                            'message': 'Data received and processed successfully'},
+                            status=status.HTTP_201_CREATED)
+        else:
+            # Invalid data
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 
