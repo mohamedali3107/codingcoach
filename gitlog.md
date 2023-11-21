@@ -21,7 +21,7 @@
 
 5. Send us `git.log` at `codingcoachgit@gmail.com`
 
-#### Linux (Using `script`)
+#### Linux/MacOS (Using `script`)
 
 1. Open VSCode and navigate to the integrated terminal.
 
