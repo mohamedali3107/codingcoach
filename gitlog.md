@@ -19,7 +19,7 @@
     Stop-Transcript
     ```
 
-5. Send us `git.log`
+5. Send us `git.log` at `codingcoachgit@gmail.com`
 
 #### Linux (Using `script`)
 
@@ -37,7 +37,7 @@
 
 4. To stop recording, type `exit` or `Ctrl+D`.
 
-5. Send us `git.log`
+5. Send us `git.log` at `codingcoachgit@gmail.com`
 
 ### /!\
 
