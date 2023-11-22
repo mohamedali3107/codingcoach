@@ -20,3 +20,6 @@ gunicorn==21.2.0
 
 django-tailwindcss==0.4.0
 django-cas-ng==5.0.1
+
+# Git API
+python_gitlab
