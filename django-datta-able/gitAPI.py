@@ -71,29 +71,3 @@ def rate_commits(project):
             print(commit.message)
             malus += min((size - 30)/30, 1)
     return 20 - malus
-
-
-def warning_message(L):
-    s = ''
-    for branch, ahead_by, behind_by in L:
-        if ahead_by >= 10:
-            s += f'''{branch} is ahead of main by {ahead_by} commits, consider merging:
-    git checkout main
-    git pull
-    git merge {branch}
-
-'''
-        if behind_by >= 10:
-            s += f'''{branch} is behind main by {behind_by} commits, consider rebasing:
-    git checkout main
-    git pull
-    git checkout {branch}
-    git rebase main
-    
-'''
-    return s
-
-#print(warning_message(compare_branches(project)))
-
-#for name, ahead_by, behind_by in compare_branches(project):
-#    print(f"{name} is ahead by {ahead_by} commits and behind by {behind_by} commits compared to main.")
