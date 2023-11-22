@@ -28,3 +28,5 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
    // Return the captured output
    return output;
 }
+
+

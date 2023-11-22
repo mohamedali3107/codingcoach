@@ -1,10 +1,8 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { askStudentMood } from "./tools/notification";
-import { executeGitCommandAndGetOutput } from "./tools/execute-command";
-import { makePostRequest } from "./tools/request"
-import { ConsoleReporter } from '@vscode/test-electron';
+import { askAndSendMood } from './tools/mood';
+
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -24,26 +22,26 @@ export function activate(context: vscode.ExtensionContext) {
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
 
-        // Get the mood of the student
-        const mood = await askStudentMood()
+        const time = { hours: 10, minutes: 30 };
 
-        console.log(mood)
-        const mood_integer = mood[0]
-        const message = mood[1]
+        setInterval(() => {
+            const now = new Date();
+            const scheduledTime = new Date();
+            scheduledTime.setHours(time.hours, time.minutes, 0, 0); // Set hours and minutes of scheduled time
+            
+            // Calculate the delay until the scheduled time (in milliseconds)
+            let delay = scheduledTime.getTime() - now.getTime();
 
-        // Get the email of the user
-        const email: string = await executeGitCommandAndGetOutput("git config user.email", terminal, 5000)
-        
-        console.log("Mood Integer:", mood_integer);
-
-        // POST request: send the mood of the student
-        const response = makePostRequest( {
-            "moodLevel": mood_integer,
-            "message": message,
-            "email": email
-        });
-
-        console.log(response)
+            if (delay < -15*60000) {
+                // If the scheduled time is in the past, schedule for the next day
+                scheduledTime.setDate(scheduledTime.getDate() + 1);
+                delay = scheduledTime.getTime() - now.getTime();
+                console.log(delay)
+            } else if (delay >= -15*60000 && delay < 15*60000) {
+            // Execute the command if the delay is within a certain threshold (e.g., 1 minute) 
+                askAndSendMood(terminal)
+            }
+        }, 15*60000); // Check every 15 minute (adjust as needed)
 
         terminals.push(terminal);
 
