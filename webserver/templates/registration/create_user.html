@@ -1,0 +1,10 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+  <h2>Create User</h2>
+  <form method="post" action="{% url 'dashboard:createUser' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Create User</button>
+  </form>
+{% endblock %}
