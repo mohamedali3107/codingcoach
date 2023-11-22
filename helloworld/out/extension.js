@@ -37,8 +37,6 @@ function activate(context) {
     let terminals = [];
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
-        const message = `Remember to run the command "script" in the new terminal`;
-        (0, git_notification_1.showNotification)(message);
         terminals.push(terminal);
         // Execute a Git command in the terminal and retrieve the output
         (0, git_notification_1.executeGitCommandAndGetOutput)("git status", terminal, 5000)
@@ -51,30 +49,11 @@ function activate(context) {
             console.log('Erreur', e);
         });
     });
-    // Register the terminal close event listener
-    const closeTerminalDisposable = vscode.window.onDidCloseTerminal((closedTerminal) => {
-        // Register a command to handle terminal closure
-        const terminal = vscode.window.activeTerminal;
-        if (terminal && terminals.includes(terminal)) {
-            vscode.window.showInformationMessage(`Did you remember to run the command "exit" in the terminal? `, { modal: true }, 'Yes').then((choice) => {
-                if (choice === 'Yes') {
-                    // User confirmed, close the terminal
-                    const closeMessage = `Terminal closed`;
-                    (0, git_notification_1.showNotification)(closeMessage);
-                    // Remove the closed terminal from the array
-                    terminals = terminals.filter((t) => t !== closedTerminal);
-                }
-                else {
-                    // User canceled, reopen the terminal
-                    vscode.window.createTerminal().show();
-                }
-            });
-        }
-    });
-    context.subscriptions.push(openTerminalListener, closeTerminalDisposable);
+    context.subscriptions.push(openTerminalListener);
 }
 exports.activate = activate;
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;
+//test
 //# sourceMappingURL=extension.js.map
