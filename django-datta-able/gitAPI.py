@@ -9,6 +9,9 @@ pip3 install 'urllib3<2.0'
 gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token='glpat-fULiHV8-x78CbwdNsz6w')
 project = gl.projects.get('amin.belfkira/game2048')
 
+def list_projects(gl):
+    return gl.projects.list(get_all=True)
+
 def get_most_ahead(project):
     branches = project.branches.list()
     max_ahead = 0
