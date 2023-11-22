@@ -44,7 +44,10 @@ export function gitStatusCommand(output: String): Array<any> {
     let changes_to_be_committed = []
     let changes_not_staged = []
     let untracked_files = []
-    let commit_ahead = 0
+    let commit_ahead = {}
+    let commit_behind = {}
+
+
 
     for (let i = 0; i < lines_number; i++) {
         let line = lines[i];
@@ -93,12 +96,13 @@ export function gitStatusCommand(output: String): Array<any> {
         } else if (line.includes("Your branch is ahead of")) {
             // Your branch is ahead of 'origin/extension' by 1 commit.
             let file_split = line.split(" ");
-            commit_ahead = parseInt(file_split[file_split.length - 2]);
+            (commit_ahead as any).file_line[5] = parseInt(file_split[7]);
+
         } else if (line.includes("Your branch is behind")) {
             // Your branch is behind 'origin/extension' by 1 commit, and can be fast-forwarded.
             // (use "git pull" to update your local branch)
             let file_split = line.split(" ");
-            commit_ahead = parseInt(file_split[file_split.length - 2]);
+            (commit_behind  as any).file_line[4] = parseInt(file_split[6]);
         }
 
     }
@@ -108,7 +112,8 @@ export function gitStatusCommand(output: String): Array<any> {
     "Changes to be commited:", changes_to_be_committed, 
     "Changes not staged for commit:", changes_not_staged, 
     "Untracked files:", untracked_files,
-    "Commit ahead:", commit_ahead
+    "Commit ahead:", commit_ahead,
+    "Commit behind:", commit_behind
     ]
 
 }
