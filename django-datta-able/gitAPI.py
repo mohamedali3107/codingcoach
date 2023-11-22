@@ -13,13 +13,15 @@ def get_project(url, token, project):
     gl = gitlab.Gitlab(url=url, private_token=token)
     return gl.projects.get(project)
 
-def list_users(url, token):
-    users = gitlab.Gitlab(url = url, private_token=token).users.list(get_all=True)
-    return [(user.name, user.email) for user in users]
+def list_projects_users(url, token):
+    projects = gitlab.Gitlab(url = url, private_token=token).projects.list(get_all=True)
+    L = []
+    for p in projects:
+        path = p.path_with_namespace
+        users = [user.name for user in p.users.list()]
+        L.append([path] + users)
+    return L
 
-def list_projects(url, token):
-    gl = gitlab.Gitlab(url = url, private_token=token)
-    return gl.projects.list(get_all=True)
 
 def get_most_ahead(url, token, project):
     project = get_project(url, token, project)
