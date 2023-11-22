@@ -1,5 +1,11 @@
 import gitlab
 
+'''
+If you encounter library compatibilty problems when installing python-gitlab, try running
+pip3 uninstall urllib3
+pip3 install 'urllib3<2.0'
+'''
+
 gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token='glpat-fULiHV8-x78CbwdNsz6w')
 project = gl.projects.get('amin.belfkira/game2048')
 
