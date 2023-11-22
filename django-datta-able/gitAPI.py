@@ -10,7 +10,7 @@ gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token=
 project = gl.projects.get('amin.belfkira/game2048')
 
 def list_users(url, token):
-    users = gl = gitlab.Gitlab(url = url, private_token=token).users.list(get_all=True)
+    users = gitlab.Gitlab(url = url, private_token=token).users.list(get_all=True)
     return [(user.name, user.email) for user in users]
 
 def list_projects(url, token):
