@@ -82,6 +82,5 @@ def rate_commits(url, token, project):
                 if line != '' and (line[0] == '-' or line[0] == '+'):
                     size += 1
         if size > 40:
-            print(commit.message)
             malus += min((size - 30)/30, 1)
     return 20 - malus
