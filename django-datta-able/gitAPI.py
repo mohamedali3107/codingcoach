@@ -9,12 +9,12 @@ pip3 install 'urllib3<2.0'
 gl = gitlab.Gitlab(url = 'https://gitlab-cw1.centralesupelec.fr', private_token='glpat-fULiHV8-x78CbwdNsz6w')
 project = gl.projects.get('amin.belfkira/game2048')
 
-def get_project(url, token, project):
-    gl = gitlab.Gitlab(url=url, private_token=token)
+def get_project(server, token, project):
+    gl = gitlab.Gitlab(url=server, private_token=token)
     return gl.projects.get(project)
 
-def list_projects_users(url, token):
-    projects = gitlab.Gitlab(url = url, private_token=token).projects.list(get_all=True)
+def list_projects_users(server, token):
+    projects = gitlab.Gitlab(url = server, private_token=token).projects.list(get_all=True)
     L = []
     for p in projects:
         path = p.path_with_namespace
@@ -23,8 +23,8 @@ def list_projects_users(url, token):
     return L
 
 
-def get_most_ahead(url, token, project):
-    project = get_project(url, token, project)
+def get_most_ahead(server, token, project):
+    project = get_project(server, token, project)
     branches = project.branches.list()
     max_ahead = 0
     for branch in branches:
@@ -35,8 +35,8 @@ def get_most_ahead(url, token, project):
                 most_ahead = branch.name
     return most_ahead
 
-def get_most_behind(url, token, project):
-    project = get_project(url, token, project)
+def get_most_behind(server, token, project):
+    project = get_project(server, token, project)
     branches = project.branches.list()
     max_behind = 0
     for branch in branches:
@@ -47,23 +47,23 @@ def get_most_behind(url, token, project):
                 most_behind = branch.name
     return most_behind
 
-def get_branch_number(url, token, project):
-    project = get_project(url, token, project)
+def get_branch_number(server, token, project):
+    project = get_project(server, token, project)
     return len(project.branches.list())
 
-def get_last_PR(url, token, project): # untested because nobody does PRs
-    project = get_project(url, token, project)
+def get_last_PR(server, token, project): # untested because nobody does PRs
+    project = get_project(server, token, project)
     merge_requests = project.mergerequests.list()
     if len(merge_requests) == 0:
         return None
     merge_requests.sort(key=lambda x: x.created_at, reverse=True)
     return merge_requests[0]
 
-def compare_branches(url, token, project):
+def compare_branches(server, token, project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
     '''
-    project = get_project(url, token, project)
+    project = get_project(server, token, project)
     branches = project.branches.list()
     L = []
     for branch in branches:
@@ -73,8 +73,8 @@ def compare_branches(url, token, project):
             L.append((branch.name, ahead_by, behind_by))
     return L
 
-def rate_commits(url, token, project):
-    project = get_project(url, token, project)
+def rate_commits(server, token, project):
+    project = get_project(server, token, project)
     malus = 0
     for commit in project.commits.list(get_all=False):
         size = 0
