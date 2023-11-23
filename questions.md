@@ -1,3 +1,5 @@
+# Questions pour les élèves 
+
 1. Quelles sont vos diffultés principales ? 
     - problemes de git 
     - probleme de code 
@@ -11,8 +13,7 @@
 5. Quels outils pour vous aider dans la coding week ? 
 
 
-
-# Question pour les coachs ? 
+# Question pour les coachs 
 
 1. Quelles sont vos diffultés principales ? 
     - problemes de git 

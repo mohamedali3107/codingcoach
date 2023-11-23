@@ -9,6 +9,7 @@ urlpatterns = [
     path('signup/' , views.sign_up , name="signup"),
     path('addTeam/' , views.addTeam , name="addTeam"), 
     path('createUser/' ,views.create_user , name="createUser" ),
-    path('sendMood/', views.MoodView.as_view(), name="Mood")
+    path('sendMood/', views.MoodView.as_view(), name="Mood"),
+    path("addNewToken/" , views.addNewToken , name="addNewToken" ),
 
 ]

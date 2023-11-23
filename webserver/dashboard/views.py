@@ -1,9 +1,9 @@
 import datetime
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from .models import TeamMood, Utilisateur
 
 from.serializers import MoodSerializer
-from .forms import RegisterForm, TeamTableForm
+from .forms import RegisterForm, TeamTableForm, TokenForm
 from django.shortcuts import redirect, render
 from django.contrib.auth import login , logout , authenticate 
 from django.contrib.auth.decorators import login_required , user_passes_test
@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required , user_passes_test
 
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+import utils.gitAPI as gitAPI
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
 def home(request : HttpRequest):
@@ -86,3 +88,33 @@ class MoodView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+#@require_http_methods(["GET", "POST"])
+
+@user_passes_test(lambda u: u.is_superuser)
+def addNewToken(request):
+    if request.method == 'GET':
+        # Si la méthode est GET, renvoyer le formulaire
+        form = TokenForm()
+        return render(request, "dashboard/token_form.html", {'form': form})
+
+    elif request.method == 'POST':
+        # Si la méthode est POST, valider le formulaire
+        form = TokenForm(request.POST)
+
+        if form.is_valid():
+            # Si le formulaire est valide, obtenir les données et appeler la fonction
+            server_url = form.cleaned_data['server_url']
+            gitlab_token = form.cleaned_data['gitlab_token']
+
+            # Appeler la fonction list_projects_users avec les données du formulaire
+            projects_users_list = gitAPI.list_projects_users(server_url, gitlab_token)
+
+            # Afficher les résultats dans la console (vous pouvez les afficher dans le template)
+            for project_users in projects_users_list:
+                print(project_users)
+
+            # Retourner une réponse, vous pouvez également rendre un template avec les résultats
+            return HttpResponse("Résultats affichés dans la console.")
+        else:
+            # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
+            return render(request, "dashboard/tokenForm.html", {'form': form})

@@ -17,7 +17,7 @@ class Utilisateur(models.Model):
 class TeamTable(models.Model):
     teamId = models.AutoField(primary_key=True)
     teamName = models.CharField(max_length=255, unique=True)
-    teamGitlabAccessToken = models.CharField(max_length=255)
+    #teamGitlabAccessToken = models.CharField(max_length=255)
     users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
 
     def __str__(self):
