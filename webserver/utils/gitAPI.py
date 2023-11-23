@@ -18,7 +18,7 @@ def list_projects_users(server, token):
     L = []
     for p in projects:
         path = p.path_with_namespace
-        users = [user.name for user in p.users.list()]
+        users = [user.username for user in p.users.list()]
         L.append([path] + users)
     return L
 
