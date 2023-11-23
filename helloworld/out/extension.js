@@ -27,7 +27,7 @@ exports.deactivate = exports.activate = void 0;
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 const vscode = __importStar(require("vscode"));
-const git_notification_1 = require("./tools/git-notification");
+const git_command_1 = require("./tools/git-command");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {
@@ -39,15 +39,16 @@ function activate(context) {
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
         terminals.push(terminal);
         // Execute a Git command in the terminal and retrieve the output
-        (0, git_notification_1.executeGitCommandAndGetOutput)("git status", terminal, 5000)
+        (0, git_command_1.executeGitCommandAndGetOutput)("git status", terminal, 5000, 'git_output_temp.txt')
             .then((value) => {
-            for (const line of (0, git_notification_1.gitStatusCommand)(value)) {
+            for (const line of (0, git_command_1.gitStatusCommand)(value)) {
                 console.log(line);
             }
         })
             .catch((e) => {
             console.log('Erreur', e);
         });
+        (0, git_command_1.branchesStatus)(terminal);
     });
     context.subscriptions.push(openTerminalListener);
 }
