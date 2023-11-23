@@ -51,13 +51,13 @@ def get_branch_number(server, token, project):
     project = get_project(server, token, project)
     return len(project.branches.list())
 
-def get_last_PR(server, token, project): # untested because nobody does PRs
+def last_PR_time(server, token, project): # untested because nobody does PRs
     project = get_project(server, token, project)
     merge_requests = project.mergerequests.list()
     if len(merge_requests) == 0:
         return None
     merge_requests.sort(key=lambda x: x.created_at, reverse=True)
-    return merge_requests[0]
+    return merge_requests[0].created_at
 
 def compare_branches(server, token, project):
     '''
