@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User, BaseUserManager
 
 
-    
+
 
 #MODEL DES ELEVES
 class Utilisateur(models.Model):
@@ -19,12 +19,16 @@ class TeamTable(models.Model):
     teamName = models.CharField(max_length=255, unique=True)
     teamGitlabAccessToken = models.CharField(max_length=255)
     users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
-    coachs = models.ManyToManyField(User , related_name='coachs')
 
     def __str__(self):
         return self.teamName
 
-
+#OBJECTIVE     
+class Coach(User):    
+    teams = models.ManyToManyField(TeamTable , related_name='teams' , blank=True)
+    def __str__(self):
+        return self.username
+    
 
 
 class TeamMood(models.Model):
