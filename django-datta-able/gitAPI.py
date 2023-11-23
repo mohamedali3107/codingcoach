@@ -23,7 +23,7 @@ def list_projects_users(server, token):
     return L
 
 
-def get_most_ahead(server, token, project):
+def most_ahead_branch(server, token, project):
     project = get_project(server, token, project)
     branches = project.branches.list()
     max_ahead = 0
@@ -35,7 +35,7 @@ def get_most_ahead(server, token, project):
                 most_ahead = branch.name
     return most_ahead
 
-def get_most_behind(server, token, project):
+def most_behind_branch(server, token, project):
     project = get_project(server, token, project)
     branches = project.branches.list()
     max_behind = 0
