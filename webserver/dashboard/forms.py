@@ -4,7 +4,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm 
 from django.contrib.auth.models import User
 
-from dashboard.models import TeamTable 
+from dashboard.models import Coach, TeamTable 
 
 # class CoachCreationForm(forms.ModelForm):
 #     password = forms.CharField(widget=forms.PasswordInput)
@@ -23,7 +23,7 @@ from dashboard.models import TeamTable
 class RegisterForm(UserCreationForm):
     email = forms.EmailField(required=True)
     class Meta:
-        model = User 
+        model = Coach 
         fields = ['username', "email" ,'password1' , "password2"]
 
 
