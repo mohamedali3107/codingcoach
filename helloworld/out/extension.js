@@ -56,5 +56,4 @@ exports.activate = activate;
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;
-//test
 //# sourceMappingURL=extension.js.map

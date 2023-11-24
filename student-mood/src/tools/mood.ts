@@ -40,8 +40,8 @@ export async function askAndSendMood(terminal: vscode.Terminal) {
     const mood_integer = mood[0]
     const message = mood[1]
 
-    // Get the email of the user
-    const email: string = await executeGitCommandAndGetOutput("git config user.email", terminal, 5000)
+    // Get the name of the user's project
+    const projectName: string = await executeGitCommandAndGetOutput(`git remote show origin | awk '/Fetch URL:/ { print $3 }' | awk -F/ '{ print $(NF-1) "/" $NF }' | sed 's/\.git$//'`, terminal, 5000)
     
     console.log("Mood Integer:", mood_integer);
 
@@ -49,7 +49,7 @@ export async function askAndSendMood(terminal: vscode.Terminal) {
     const response = makePostRequest( {
         "moodLevel": mood_integer,
         "message": message,
-        "email": email
+        "email": projectName
     });
 
     console.log(response)

@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { showNotification } from './git-notification';
+import { showNotification, showBigNotification } from './git-notification';
+import { Context } from 'mocha';
 
 export async function executeGitCommandAndGetOutput(command: string, terminal: vscode.Terminal, duration: number, path: string): Promise<string> {
     
@@ -137,36 +138,36 @@ export async function compareBranchWithMain(branchName: string, terminal: vscode
 
 export function warning_message(branchName: string, ahead_by: number, behind_by: number) {
     let message = '';
-    if (ahead_by >= 1) {
-        message += `${branchName} is ahead of main by ${ahead_by} commits, consider merging: \n
-        git checkout main \n
-        git pull \n
-        git merge ${branchName}`
-    }
-
-
-    if (behind_by >= 1) {
-        message += `${branchName} is behind main by ${behind_by} commits, consider rebasing: \n
-        git checkout main \n
-        git pull \n
-        git checkout ${branchName} \n
-        git rebase main`
+    if (ahead_by >= 1 && behind_by ===0) {
+        message += `${branchName} is ahead of main by ${ahead_by} commits, consider merging: 
+        git checkout main, git pull, git merge ${branchName}, git push origin main`
+    } else if (behind_by >= 1 && ahead_by ===0) {
+        message += `${branchName} is behind main by ${behind_by} commits, consider rebasing: 
+        git checkout main, git pull, git checkout ${branchName}, git rebase main, git push origin ${branchName}`
+    } else if (behind_by >= 1 && ahead_by >= 1) {
+        message += `${branchName} is ahead of main by ${ahead_by} commits and behind main by ${behind_by} commits, 
+        consider rebasing and merging. Execute this to rebase: 
+        git checkout main, git pull, git checkout ${branchName}, git rebase main, git push origin ${branchName}; 
+        Execute this to merge: 
+        git checkout main, git pull, git merge ${branchName}, git push origin main`
     }
     
     return message
 }
 
-export function getBranches(terminal: vscode.Terminal): string[] {
+export async function getBranches(terminal: vscode.Terminal) {
     const duration = 5000
     const command = "git branch"
     let out = ""
 
-    executeGitCommandAndGetOutput(command, terminal, duration, 'git_output_temp_branch.txt')
+    await executeGitCommandAndGetOutput(command, terminal, duration, 'git_output_temp_branch.txt')
         .then((value) => out = value)
         .catch((e) => console.log(e))
 
     let lines = out.split("\n")
     let names = []
+
+    console.log(lines)
 
     for (const line of lines) {
         const name = (line[0] !== "\t" ? line.split(" ") : line.split("\t"));
@@ -176,14 +177,20 @@ export function getBranches(terminal: vscode.Terminal): string[] {
 }
 
 export async function branchesStatus(terminal: vscode.Terminal) {
-    const branches = getBranches(terminal);
+    let branches: string[] = [];
+    await getBranches(terminal)
+        .then((value) => branches = value)
+        .catch((e) => console.log(e))
+
+    console.log("Branches:", branches)
     for (const branch of branches) {
         const [commit_ahead, commit_behind] = await compareBranchWithMain(branch, terminal);
+        console.log("branchName:", branch)
         const message = warning_message(branch, commit_ahead, commit_behind)
         console.log("Message:", message)
         if (message != "") {
-            showNotification(message)
+            showBigNotification(message)
         }
     }
 }
-//test
+
