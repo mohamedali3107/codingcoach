@@ -3,12 +3,13 @@ from django.http import HttpRequest, HttpResponse
 from .models import GitlabAccessRepo, TeamMood, Utilisateur
 
 from.serializers import MoodSerializer
-from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm, TokenForm
+from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
 from django.shortcuts import redirect, render
 from django.contrib.auth import login , logout , authenticate 
 from django.contrib.auth.decorators import login_required , user_passes_test
 # Create your views here.
 
+from utils import gitAPI
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
@@ -90,7 +91,7 @@ class MoodView(APIView):
 
 #@require_http_methods(["GET", "POST"])
 
-@user_passes_test(lambda u: u.is_superuser)
+@login_required(login_url="/login")
 def addNewToken(request):
     if request.method == 'GET':
         # Si la méthode est GET, renvoyer le formulaire
@@ -109,6 +110,11 @@ def addNewToken(request):
                 projectName=form.cleaned_data['project_name']
             )
             gitlab_access_repo.save()
+
+            res = gitAPI.list_projects_users(form.cleaned_data['server_url'] , form.cleaned_data['gitlab_token']) 
+
+
+            
 
             # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
 
