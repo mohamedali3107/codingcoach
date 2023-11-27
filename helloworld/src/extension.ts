@@ -15,10 +15,13 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
-        
-        terminals.push(terminal);
 
-        branchesStatus(terminal)
+        setInterval(() => {
+                branchesStatus(terminal)
+
+        }, 30*60000); // Check every 30 minutes: 30*60000
+
+        terminals.push(terminal);
 
     });
 
