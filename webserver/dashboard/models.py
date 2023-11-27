@@ -12,27 +12,16 @@ class Utilisateur(models.Model):
 
     def __str__(self):
         return self.username
-    
 
-class TeamTable(models.Model):
-    teamId = models.AutoField(primary_key=True)
-    teamName = models.CharField(max_length=255, unique=True)
-    teamGitlabAccessToken = models.CharField(max_length=255)
-    users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
+class GitlabAccessRepo(models.Model):
+    token = models.CharField(max_length=255)
+    url = models.URLField()
+    projectName = models.CharField(max_length=255)
+    id = models.AutoField(primary_key=True)  
 
-    def __str__(self):
-        return self.teamName
-
-#OBJECTIVE     
-class Coach(User):    
-    teams = models.ManyToManyField(TeamTable , related_name='teams' , blank=True)
-    def __str__(self):
-        return self.username
-    
 
 
 class TeamMood(models.Model):
-    teams = models.ManyToManyField(TeamTable, related_name='moods')
     timeStamp = models.DateTimeField(auto_now_add=True)
     moodLevel = models.IntegerField()
     message = models.TextField()
@@ -42,7 +31,6 @@ class TeamMood(models.Model):
 
 
 class TeamRepo(models.Model):
-    teams = models.ManyToManyField(TeamTable, related_name='repos')
     timeStamp = models.DateTimeField(auto_now_add=True)
     branchNumber = models.IntegerField()
     branchBehindMax = models.IntegerField()
@@ -52,4 +40,24 @@ class TeamRepo(models.Model):
 
     def __str__(self):
         return f"TeamRepo - {self.timeStamp}"
+
+
+class TeamTable(models.Model):
+    teamId = models.AutoField(primary_key=True)
+    teamName = models.CharField(max_length=255, unique=True)
+    gitlabRepo = models.ForeignKey(GitlabAccessRepo, related_name="gitlabAccess", on_delete=models.CASCADE, unique=False)
+    users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
+    moods = models.ManyToManyField(TeamMood , related_name="moods" , blank=True ) 
+    repos = models.ManyToManyField(TeamRepo , related_name="repos" , blank=True )
+    def __str__(self):
+        return self.teamName
+
+#OBJECTIVE     
+class Coach(User):    
+    teams = models.ManyToManyField(TeamTable , related_name='teams' , blank=True)
+
+    def __str__(self):
+        return self.username
+    
+
 

@@ -1,16 +1,19 @@
 import datetime
-from django.http import HttpRequest
-from .models import TeamMood, Utilisateur
+from django.http import HttpRequest, HttpResponse
+from .models import GitlabAccessRepo, TeamMood, Utilisateur
 
 from.serializers import MoodSerializer
-from .forms import RegisterForm, TeamTableForm
+from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
 from django.shortcuts import redirect, render
 from django.contrib.auth import login , logout , authenticate 
 from django.contrib.auth.decorators import login_required , user_passes_test
 # Create your views here.
 
+from utils import gitAPI
 from rest_framework.views import APIView
 from rest_framework.response import Response
+
+import utils.gitAPI as gitAPI
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
 def home(request : HttpRequest):
@@ -86,3 +89,37 @@ class MoodView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+#@require_http_methods(["GET", "POST"])
+
+@login_required(login_url="/login")
+def addNewToken(request):
+    if request.method == 'GET':
+        # Si la méthode est GET, renvoyer le formulaire
+        form = GitlabAccessRepoForm()
+        return render(request, "dashboard/token_form.html", {'form': form})
+
+    elif request.method == 'POST':
+        # Si la méthode est POST, valider le formulaire
+        form = GitlabAccessRepoForm(request.POST)
+
+        if form.is_valid():
+            # Si le formulaire est valide, enregistrer les données dans le modèle
+            gitlab_access_repo = GitlabAccessRepo(
+                token=form.cleaned_data['gitlab_token'],
+                url=form.cleaned_data['server_url'],
+                projectName=form.cleaned_data['project_name']
+            )
+            gitlab_access_repo.save()
+
+            res = gitAPI.list_projects_users(form.cleaned_data['server_url'] , form.cleaned_data['gitlab_token']) 
+
+
+            
+
+            # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
+
+            # Retourner une réponse, vous pouvez également rediriger vers une autre vue ou un template
+            return HttpResponse("Le token a été ajouté avec succès.")
+        else:
+            # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
+            return render(request, "dashboard/token_form.html", {'form': form})
