@@ -1,8 +1,7 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { showNotification, showBigNotification } from './git-notification';
-
+import { showBigNotification } from './git-notification';
 
 export async function executeGitCommandAndGetOutput(command: string, terminal: vscode.Terminal, duration: number, path: string): Promise<string> {
     
@@ -34,25 +33,25 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
 
 interface GitStatusInfo {
     current_branch: string;
-    changes_to_be_commited :string[]; 
+    changes_to_be_commited: string[]; 
     changes_not_staged_for_commit: string[]; 
     untracked_files: string[];
-    commit_ahead: Object;
-    commit_behind: Object;
+    commit_ahead: {branch: string, commit_ahead: number};
+    commit_behind: {branch: string, commit_behind: number};
 }
 
 
 export function gitStatusCommand(output: String): GitStatusInfo {
 
-    let lines = output.split("\n")
-    const lines_number = lines.length
+    let lines = output.split("\n");
+    const lines_number = lines.length;
 
-    let branch = ""
-    let changes_to_be_committed = []
-    let changes_not_staged = []
-    let untracked_files = []
-    let commit_ahead = {}
-    let commit_behind = {}
+    let branch = "";
+    let changes_to_be_committed = [];
+    let changes_not_staged = [];
+    let untracked_files = [];
+    let commit_ahead = {branch: "", commit_ahead: 0};
+    let commit_behind = {branch: "", commit_behind: 0};
 
 
     for (let i = 0; i < lines_number; i++) {
@@ -99,12 +98,12 @@ export function gitStatusCommand(output: String): GitStatusInfo {
                 file = lines[i+j];
             }
         } else if (line.includes("Your branch is ahead of")) {
-            console.log(line);
             // Your branch is ahead of 'origin/extension' by 1 commit.
             let file_split = (line[0] !== "\t" ? line.split(" ") : line.split("\t"));
             const ahead_branch = file_split[5];
             const n = ahead_branch.length;
-            (commit_ahead as any)[ahead_branch.substring(1,n-1)] = parseInt(file_split[7]);
+            commit_ahead.branch = ahead_branch.substring(1,n-1);
+            commit_ahead.commit_ahead = parseInt(file_split[7]);
 
         } else if (line.includes("Your branch is behind")) {
             // Your branch is behind 'origin/extension' by 1 commit, and can be fast-forwarded.
@@ -112,7 +111,8 @@ export function gitStatusCommand(output: String): GitStatusInfo {
             let file_split = (line[0] !== "\t" ? line.split(" ") : line.split("\t"));
             const behind_branch = file_split[5];
             const n = behind_branch.length;
-            (commit_behind  as any)[behind_branch.substring(1,n-1)] = parseInt(file_split[6]);
+            commit_behind.branch = behind_branch.substring(1,n-1);
+            commit_behind.commit_behind = parseInt(file_split[6]);
         }
 
     }
@@ -144,20 +144,22 @@ export async function compareBranchWithMain(branchName: string, terminal: vscode
 
 }
 
-export function warning_message(branchName: string, ahead_by: number, behind_by: number) {
+export function warning_message(branchName: string, ahead_by: number, behind_by: number, comparisonBranch: string) {
     let message = '';
     if (ahead_by >= 1 && behind_by ===0) {
-        message += `${branchName} is ahead of main by ${ahead_by} commits, consider merging: 
-        git checkout main, git pull, git merge ${branchName}, git push origin main`
+        message += `${branchName} is ahead of ${comparisonBranch} by ${ahead_by} commits, consider merging: 
+        git checkout ${comparisonBranch}, git pull, git merge ${branchName}, git push origin ${comparisonBranch}`
     } else if (behind_by >= 1 && ahead_by ===0) {
-        message += `${branchName} is behind main by ${behind_by} commits, consider rebasing: 
-        git checkout main, git pull, git checkout ${branchName}, git rebase main, git push origin ${branchName}`
+        message += `${branchName} is behind ${comparisonBranch} by ${behind_by} commits, consider rebasing: 
+        git checkout ${comparisonBranch}, git pull, git checkout ${branchName}, git rebase ${comparisonBranch}, 
+        git push origin ${branchName}`
     } else if (behind_by >= 1 && ahead_by >= 1) {
-        message += `${branchName} is ahead of main by ${ahead_by} commits and behind main by ${behind_by} commits, 
+        message += `${branchName} is ahead of ${comparisonBranch} by ${ahead_by} commits and behind ${comparisonBranch} 
+        by ${behind_by} commits, 
         consider rebasing and merging. Execute this to rebase: 
-        git checkout main, git pull, git checkout ${branchName}, git rebase main, git push origin ${branchName}; 
+        git checkout ${comparisonBranch}, git pull, git checkout ${branchName}, git rebase ${comparisonBranch}, git push origin ${branchName}; 
         Execute this to merge: 
-        git checkout main, git pull, git merge ${branchName}, git push origin main`
+        git checkout ${comparisonBranch}, git pull, git merge ${branchName}, git push origin ${comparisonBranch}`
     }
     
     return message
@@ -186,23 +188,71 @@ export async function getBranches(terminal: vscode.Terminal) {
 
 export async function branchesStatus(terminal: vscode.Terminal) {
     let branch: string = "";
+    let changes_to_be_commited: string[] = [];
+    let changes_not_staged_for_commit: string[] = [];
+    let untracked_files: string[] = [];
+    let commit_ahead_remote = {branch: "", commit_ahead: 0};
+    let commit_behind_remote = {branch: "", commit_behind: 0};
+
+
     executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp.txt')
         .then((value) =>
             {
-                branch = gitStatusCommand(value).current_branch
+                const out = gitStatusCommand(value);
+                branch = out.current_branch;
+                changes_to_be_commited = out.changes_to_be_commited;
+                changes_not_staged_for_commit = out.changes_not_staged_for_commit;
+                untracked_files = out.untracked_files;
+                commit_ahead_remote = out.commit_ahead;
+                commit_behind_remote = out.commit_behind;
                 }
         )
         .catch((e) => {
             console.log('Erreur', e)
     })
 
-    console.log("Branches:", branch)
-    const [commit_ahead, commit_behind] = await compareBranchWithMain(branch, terminal);
-    console.log("branchName:", branch)
-    const message = warning_message(branch, commit_ahead, commit_behind)
-    console.log("Message:", message)
-    if (message != "") {
-        showBigNotification(message)
+    const [commit_ahead_main, commit_behind_main] = await compareBranchWithMain(branch, terminal);
+    const message_local = warning_message(branch, commit_ahead_main, commit_behind_main, "main")
+    if (message_local != "") {
+        showBigNotification(message_local)
     }
+
+    // Show a second notification after 5 minutes
+    const delay1 = 5*60000;
+    setTimeout(() => {
+        const message_remote = warning_message(branch, commit_ahead_remote.commit_ahead, commit_behind_remote.commit_behind, commit_ahead_remote.branch)
+        if (message_remote != "") {
+            showBigNotification(message_remote)
+        }
+    }, delay1);
+
+    // Show a third notification after 10 minutes
+    const delay2 = 10*60000;
+    setTimeout(() => {
+        let changes_to_be_commited_length = changes_to_be_commited.length;
+        let changes_not_staged_for_commit_length = changes_not_staged_for_commit.length;
+        let untracked_files_length = untracked_files.length;
+        if (changes_not_staged_for_commit_length !== 0) {
+            let changes = ""
+            for (const change of changes_not_staged_for_commit) {
+                changes += (change) + ", "
+            }
+            const message = `You have not staged changes. Don't forget to add the files ${changes}.`
+            showBigNotification(message)
+        }
+        if (changes_to_be_commited_length !== 0) {
+            const message = `You have not committed changes. Don't forget to commit and push.`
+            showBigNotification(message)
+        }
+        if (untracked_files_length !== 0) {
+            let changes = ""
+            for (const change of untracked_files) {
+                changes += (change) + ", "
+            }
+            const message = `The following files are untracked: ${changes}. Don't forget to add, commit and push them.`
+            showBigNotification(message)
+        }
+    }, delay2);
+
 }
 
