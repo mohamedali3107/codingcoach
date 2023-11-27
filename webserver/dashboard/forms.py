@@ -36,6 +36,8 @@ class TeamTableForm(forms.ModelForm):
 
 
 
-class TokenForm(forms.Form):
+class GitlabAccessRepoForm(forms.Form):
     server_url = forms.URLField(label='URL du serveur GitLab', required=True)
-    gitlab_token = forms.CharField(label='GitLab Token', max_length=100, required=True)
+    gitlab_token = forms.CharField(label='GitLab Token', max_length=255, required=True)
+    project_name = forms.CharField(label='Nom du projet', max_length=255, required=True)
+

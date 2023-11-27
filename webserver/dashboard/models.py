@@ -12,7 +12,12 @@ class Utilisateur(models.Model):
 
     def __str__(self):
         return self.username
-    
+
+class GitlabAccessRepo(models.Model):
+    token = models.CharField(max_length=255)
+    url = models.URLField()
+    projectName = models.CharField(max_length=255)
+    id = models.AutoField(primary_key=True)  
 
 class TeamTable(models.Model):
     teamId = models.AutoField(primary_key=True)

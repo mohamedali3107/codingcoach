@@ -1,9 +1,9 @@
 import datetime
 from django.http import HttpRequest, HttpResponse
-from .models import TeamMood, Utilisateur
+from .models import GitlabAccessRepo, TeamMood, Utilisateur
 
 from.serializers import MoodSerializer
-from .forms import RegisterForm, TeamTableForm, TokenForm
+from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm, TokenForm
 from django.shortcuts import redirect, render
 from django.contrib.auth import login , logout , authenticate 
 from django.contrib.auth.decorators import login_required , user_passes_test
@@ -94,27 +94,26 @@ class MoodView(APIView):
 def addNewToken(request):
     if request.method == 'GET':
         # Si la méthode est GET, renvoyer le formulaire
-        form = TokenForm()
+        form = GitlabAccessRepoForm()
         return render(request, "dashboard/token_form.html", {'form': form})
 
     elif request.method == 'POST':
         # Si la méthode est POST, valider le formulaire
-        form = TokenForm(request.POST)
+        form = GitlabAccessRepoForm(request.POST)
 
         if form.is_valid():
-            # Si le formulaire est valide, obtenir les données et appeler la fonction
-            server_url = form.cleaned_data['server_url']
-            gitlab_token = form.cleaned_data['gitlab_token']
+            # Si le formulaire est valide, enregistrer les données dans le modèle
+            gitlab_access_repo = GitlabAccessRepo(
+                token=form.cleaned_data['gitlab_token'],
+                url=form.cleaned_data['server_url'],
+                projectName=form.cleaned_data['project_name']
+            )
+            gitlab_access_repo.save()
 
-            # Appeler la fonction list_projects_users avec les données du formulaire
-            projects_users_list = gitAPI.list_projects_users(server_url, gitlab_token)
+            # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
 
-            # Afficher les résultats dans la console (vous pouvez les afficher dans le template)
-            for project_users in projects_users_list:
-                print(project_users)
-
-            # Retourner une réponse, vous pouvez également rendre un template avec les résultats
-            return HttpResponse("Résultats affichés dans la console.")
+            # Retourner une réponse, vous pouvez également rediriger vers une autre vue ou un template
+            return HttpResponse("Le token a été ajouté avec succès.")
         else:
             # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
-            return render(request, "dashboard/tokenForm.html", {'form': form})
+            return render(request, "dashboard/token_form.html", {'form': form})
