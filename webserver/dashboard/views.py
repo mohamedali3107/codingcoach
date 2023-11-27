@@ -1,6 +1,6 @@
 import datetime
 from django.http import HttpRequest, HttpResponse
-from .models import GitlabAccessRepo, TeamMood, Utilisateur
+from .models import GitlabAccessRepo, TeamMood, TeamTable, Utilisateur
 
 from.serializers import MoodSerializer
 from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
@@ -105,21 +105,36 @@ def addNewToken(request):
         if form.is_valid():
             # Si le formulaire est valide, enregistrer les données dans le modèle
             gitlab_access_repo = GitlabAccessRepo(
-                token=form.cleaned_data['gitlab_token'],
-                url=form.cleaned_data['server_url'],
-                projectName=form.cleaned_data['project_name']
+                token=form.cleaned_data['token'],
+                url=form.cleaned_data['url'],
+                projectName=form.cleaned_data['projectName']
             )
             gitlab_access_repo.save()
 
-            res = gitAPI.list_projects_users(form.cleaned_data['server_url'] , form.cleaned_data['gitlab_token']) 
+            res = gitAPI.list_projects_users(form.cleaned_data['url'] , form.cleaned_data['token']) 
 
+             # Create TeamTable
+            team_table = TeamTable(
+                teamName=res[0],
+                gitlabRepo=gitlab_access_repo
+            )
+            team_table.save()
 
-            
+            # Add users to TeamTable
+            for username in res[1:]:
+                user, created = Utilisateur.objects.get_or_create(username=username)
+                team_table.users.add(user)
+
+            # Add TeamTable to the teams of the currently logged-in coach
+            coach = request.user
+            coach.teams.add(team_table)
+        
+            print(res)
 
             # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
 
             # Retourner une réponse, vous pouvez également rediriger vers une autre vue ou un template
-            return HttpResponse("Le token a été ajouté avec succès.")
+            return redirect("/dashboard")
         else:
             # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
             return render(request, "dashboard/token_form.html", {'form': form})

@@ -1,13 +1,13 @@
 # Django
-__pycache__/
+__pycache__/*
 *.pyc
 *.pyo
 *.pyd
 *.db
 
 # Environnement virtuel
-venv/
-env/
+venv/*
+env/*
 
 # Fichiers de configuration
 *.sqlite3
@@ -37,21 +37,21 @@ env/
 *.pyd
 
 # Fichiers de test et de couverture
-htmlcov/
+htmlcov/*
 .tox/
 .coverage
 .coverage.*
-.cachier/
+.cachier/*
 
 # Dossiers spécifiques à l'environnement de déploiement
 /static/
 /media/
 
 # Dossiers générés par Django
-__pycache__/
+__pycache__/*
 db.sqlite3
-/media/
-/static/
+/media/*
+/static/*
 
 # Fichiers générés par la collecte statique
 .DS_Store

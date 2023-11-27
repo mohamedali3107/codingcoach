@@ -4,7 +4,6 @@ from django.contrib.auth.models import User, BaseUserManager
 
 
 
-#MODEL DES ELEVES
 class Utilisateur(models.Model):
     id = models.AutoField(primary_key=True)
     email = models.EmailField(unique=True)
@@ -14,10 +13,10 @@ class Utilisateur(models.Model):
         return self.username
 
 class GitlabAccessRepo(models.Model):
+    id = models.AutoField(primary_key=True)  
     token = models.CharField(max_length=255)
     url = models.URLField()
     projectName = models.CharField(max_length=255)
-    id = models.AutoField(primary_key=True)  
 
 
 
