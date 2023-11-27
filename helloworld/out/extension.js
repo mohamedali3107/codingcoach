@@ -38,16 +38,6 @@ function activate(context) {
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
         terminals.push(terminal);
-        // Execute a Git command in the terminal and retrieve the output
-        (0, git_command_1.executeGitCommandAndGetOutput)("git status", terminal, 5000, 'git_output_temp.txt')
-            .then((value) => {
-            for (const line of (0, git_command_1.gitStatusCommand)(value)) {
-                console.log(line);
-            }
-        })
-            .catch((e) => {
-            console.log('Erreur', e);
-        });
         (0, git_command_1.branchesStatus)(terminal);
     });
     context.subscriptions.push(openTerminalListener);

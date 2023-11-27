@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 
 import { showNotification, showBigNotification } from './git-notification';
-import { Context } from 'mocha';
+
 
 export async function executeGitCommandAndGetOutput(command: string, terminal: vscode.Terminal, duration: number, path: string): Promise<string> {
     
@@ -32,13 +32,22 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
    return output;
 }
 
-export function gitStatusCommand(output: String): Array<any> {
+interface GitStatusInfo {
+    current_branch: string;
+    changes_to_be_commited :string[]; 
+    changes_not_staged_for_commit: string[]; 
+    untracked_files: string[];
+    commit_ahead: Object;
+    commit_behind: Object;
+}
+
+
+export function gitStatusCommand(output: String): GitStatusInfo {
 
     let lines = output.split("\n")
     const lines_number = lines.length
 
     let branch = ""
-    let relationship_with_remote = ""
     let changes_to_be_committed = []
     let changes_not_staged = []
     let untracked_files = []
@@ -51,7 +60,6 @@ export function gitStatusCommand(output: String): Array<any> {
 
         if (line.includes("On branch")) {
             branch += line.substring(10,line.length);
-            relationship_with_remote += lines[i+1];
 
         } else if (line.includes("Changes to be committed:")){
             let j = 1;
@@ -109,15 +117,15 @@ export function gitStatusCommand(output: String): Array<any> {
 
     }
 
-    return ["Current branch:", branch, 
-    "Relationship with remote repository:", relationship_with_remote, 
-    "Changes to be commited:", changes_to_be_committed, 
-    "Changes not staged for commit:", changes_not_staged, 
-    "Untracked files:", untracked_files,
-    "Commit ahead:", commit_ahead,
-    "Commit behind:", commit_behind
-    ]
+    const res = { current_branch: branch, 
+        changes_to_be_commited : changes_to_be_committed, 
+        changes_not_staged_for_commit: changes_not_staged, 
+        untracked_files: untracked_files,
+        commit_ahead: commit_ahead,
+        commit_behind: commit_behind
+    }
 
+    return res
 }
 
 export async function compareBranchWithMain(branchName: string, terminal: vscode.Terminal) {
@@ -177,20 +185,24 @@ export async function getBranches(terminal: vscode.Terminal) {
 }
 
 export async function branchesStatus(terminal: vscode.Terminal) {
-    let branches: string[] = [];
-    await getBranches(terminal)
-        .then((value) => branches = value)
-        .catch((e) => console.log(e))
+    let branch: string = "";
+    executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp.txt')
+        .then((value) =>
+            {
+                branch = gitStatusCommand(value).current_branch
+                }
+        )
+        .catch((e) => {
+            console.log('Erreur', e)
+    })
 
-    console.log("Branches:", branches)
-    for (const branch of branches) {
-        const [commit_ahead, commit_behind] = await compareBranchWithMain(branch, terminal);
-        console.log("branchName:", branch)
-        const message = warning_message(branch, commit_ahead, commit_behind)
-        console.log("Message:", message)
-        if (message != "") {
-            showBigNotification(message)
-        }
+    console.log("Branches:", branch)
+    const [commit_ahead, commit_behind] = await compareBranchWithMain(branch, terminal);
+    console.log("branchName:", branch)
+    const message = warning_message(branch, commit_ahead, commit_behind)
+    console.log("Message:", message)
+    if (message != "") {
+        showBigNotification(message)
     }
 }
 
