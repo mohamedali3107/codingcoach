@@ -24,3 +24,6 @@ django-cas-ng==5.0.1
 # Git API
 python_gitlab
 openai==0.28
+
+#RESTFRAMEWORK
+djangorestframework==3.14.0
