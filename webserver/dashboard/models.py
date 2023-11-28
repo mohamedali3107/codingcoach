@@ -43,7 +43,7 @@ class TeamRepo(models.Model):
 
 class TeamTable(models.Model):
     teamId = models.AutoField(primary_key=True)
-    teamName = models.CharField(max_length=255, unique=True)
+    teamName = models.CharField(max_length=255)
     gitlabRepo = models.ForeignKey(GitlabAccessRepo, related_name="gitlabAccess", on_delete=models.CASCADE, unique=False)
     users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
     moods = models.ManyToManyField(TeamMood , related_name="moods" , blank=True ) 

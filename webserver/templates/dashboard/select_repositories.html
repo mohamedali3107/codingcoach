@@ -1,0 +1,29 @@
+{% extends 'layouts/base.html' %}
+
+{% block content %}
+    <h2>Select Repositories</h2>
+
+    <form method="post" action="{% url 'dashboard:addNewToken' %}">
+        {% csrf_token %}
+        
+        {{ form.as_p }}
+    
+        <!-- Serialize the form data and include it as hidden fields -->
+        {% for field in form %}
+          {% if field.name != 'selected_repos' %} {# Exclude the selected_repos field #}
+            <input type="hidden" name="{{ field.name }}" value="{{ field.value }}">
+          {% endif %}
+        {% endfor %}
+        
+        <label for="selected_repos">Select Repositories:</label>
+        <select name="selected_repos" multiple>
+          {% for repo in repos %}
+            <option value="{{ repo }}">{{ repo }}</option>
+          {% endfor %}
+        </select>
+        
+        <button type="submit">Save Selected Repositories</button>
+      </form>
+    
+
+{% endblock %}
