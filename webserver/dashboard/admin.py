@@ -26,3 +26,7 @@ class TeamMoodModelAdmin(admin.ModelAdmin):
 @admin.register(TeamRepo)
 class TeamRepoModelAdmin(admin.ModelAdmin):
     list_display = ('timeStamp', 'branchNumber', 'branchBehindMax', 'branchAheadMax', 'lastPrTime', 'commitQuality')
+
+@admin.register(GitlabAccessRepo)
+class GitlabAccessRepoAdmin(admin.ModelAdmin):
+    list_display = ('projectName',)  # Customize the fields to display
