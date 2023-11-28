@@ -10,7 +10,7 @@ venv/*
 env/*
 
 # Fichiers de configuration
-*.sqlite3
+# *.sqlite3
 *.pyc
 *.pyo
 *.pyd
@@ -69,10 +69,10 @@ __pycache__/*
 *.pyc
 *.pyo
 *.pyd
-db.sqlite3
-db.sqlite3-journal
-*.sqlite3
-*.sqlite3-journal
+# db.sqlite3
+# db.sqlite3-journal
+# *.sqlite3
+# *.sqlite3-journal
 
 # Enregistrement des dépendances Python
 pip-log.txt
