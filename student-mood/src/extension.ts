@@ -43,9 +43,13 @@ export function activate(context: vscode.ExtensionContext) {
             }
         }, 15*60000); // Check every 15 minute (adjust as needed)
 
+        askAndSendMood(terminal)
+
         terminals.push(terminal);
 
     });
+
+    
 
     context.subscriptions.push(openTerminalListener);
 }

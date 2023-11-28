@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TeamMood, TeamRepo, TeamTable, Utilisateur
+from .models import TeamMood, TeamRepo, TeamTable, Utilisateur, GitlabAccessRepo
 from .models import Coach
 
 # Register your models here.
@@ -14,7 +14,7 @@ class UtilisateurModelAdmin(admin.ModelAdmin):
 
 @admin.register(TeamTable)
 class TeamTableModelAdmin(admin.ModelAdmin):
-    list_display = ('teamId',)  # Customize the fields to display
+    list_display = ('teamName',)  # Customize the fields to display
 
 @admin.register(TeamMood)
 class TeamModelAdmin(admin.ModelAdmin):
@@ -23,3 +23,7 @@ class TeamModelAdmin(admin.ModelAdmin):
 @admin.register(TeamRepo)
 class TeamRepoModelAdmin(admin.ModelAdmin):
     list_display = ('timeStamp',)  # Customize the fields to display
+
+@admin.register(GitlabAccessRepo)
+class GitlabAccessRepoAdmin(admin.ModelAdmin):
+    list_display = ('projectName',)  # Customize the fields to display

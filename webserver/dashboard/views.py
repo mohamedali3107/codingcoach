@@ -7,10 +7,12 @@ from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm
 from django.shortcuts import redirect, render
 from django.contrib.auth import login , logout , authenticate 
 from django.contrib.auth.decorators import login_required , user_passes_test
+from rest_framework import status
 # Create your views here.
 
 from utils import gitAPI
 from rest_framework.views import APIView
+from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
 
 import utils.gitAPI as gitAPI
@@ -72,15 +74,21 @@ class MoodView(APIView):
             # Valid data
             moodLevel = serializer.validated_data['moodLevel']
             message = serializer.validated_data['message']
-            email = serializer.validated_data['email']
+            projectName = serializer.validated_data['projectName']
+            
+            # Fetch GitlabAccessRepo by projectName
+            try:
+                repo = GitlabAccessRepo.objects.get(projectName=projectName)
+            except GitlabAccessRepo.DoesNotExist:
+                return Response({'status': 'error', 'message': 'Repo not found for the given projectName'}, 
+                                status=status.HTTP_404_NOT_FOUND)
 
-            user = Utilisateur.objects.filter(email=email).first()
-
-            team = user.teams.all()
-
-            mood = TeamMood.objects.create(timeStamp=datetime.now(), moodLevel=moodLevel, message=message)
-            mood.teams.set(team)
-
+            team = repo.gitlabAccess.first()
+            
+            if team:
+                mood = TeamMood.objects.create(timeStamp=datetime.datetime.now(), moodLevel=moodLevel, message=message)
+                team.moods.add(mood)
+                
             return Response({'status': 'success',
                             'message': 'Data received and processed successfully'},
                             status=status.HTTP_201_CREATED)
