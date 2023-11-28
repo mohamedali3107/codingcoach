@@ -234,7 +234,7 @@ def addNewToken(request):
             # Add users to TeamTable
             for username in repo[1:]:
                 # print("USER ", username)
-                user, created = Utilisateur.objects.get_or_create(username=username)
+                user, created = Utilisateur.objects.get_or_create(username=username.replace("'",""))
                 team_table.users.add(user)
 
             # Add TeamTable to the teams of the currently logged-in coach
