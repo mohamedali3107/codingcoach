@@ -1,6 +1,6 @@
 import datetime
 from django.http import HttpRequest, HttpResponse
-from .models import GitlabAccessRepo, TeamMood, TeamTable, Utilisateur
+from .models import Coach, GitlabAccessRepo, TeamMood, TeamTable, Utilisateur
 
 from.serializers import MoodSerializer
 from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
@@ -18,9 +18,50 @@ from rest_framework.response import Response
 import utils.gitAPI as gitAPI
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
-def home(request : HttpRequest):
-    print(request.user.id )
-    return render(request , 'dashboard/index.html')
+def home(request):
+    # Assuming the logged-in user is a coach
+    coach : Coach = request.user.coach 
+
+    print("COACH :" , coach )
+
+    #print(coach)
+    # Retrieve all teams managed by the coach
+    teams_managed_by_coach = coach.teams.all()
+    print("TEAMS  :" , teams_managed_by_coach )
+
+    # Create dictionaries to store users, moods, and repos for each team
+    team_data = {}
+    gitlab_access_repo_info = {}
+
+    for team in teams_managed_by_coach:
+        # Retrieve users, moods, and repos for each team
+        users = team.users.all()
+        moods = team.moods.all()
+        repos = team.repos.all()
+        print("TEAM : " , team)
+        
+        # Retrieve GitLab information using the stored GitLab access token and repository URL
+        gitlab_repo = team.gitlabRepo
+
+        # Retrieve information from the GitlabAccessRepo model
+        gitlab_access_repo_info = {
+            'token': gitlab_repo.token,
+            'url': gitlab_repo.url,
+            'projectName': gitlab_repo.projectName,
+        }
+        print("RePO  : " , gitlab_access_repo_info)
+        # Store the data in the dictionary
+        team_data[team] = {
+            'users': users,
+            'moods': moods,
+            'repos': repos,
+            'gitlab_access_repo_info': gitlab_access_repo_info,
+        }
+    
+
+    print("TEAM DATA : " , team_data)
+
+    return render(request, 'dashboard/index.html', {'team_data': team_data})
 
 @login_required(login_url="/login")
 def addTeam(request):
@@ -134,7 +175,7 @@ def addNewToken(request):
                 team_table.users.add(user)
 
             # Add TeamTable to the teams of the currently logged-in coach
-            coach = request.user
+            coach = request.user.coach
             coach.teams.add(team_table)
         
             print(res)

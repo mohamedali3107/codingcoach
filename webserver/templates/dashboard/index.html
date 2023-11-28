@@ -15,7 +15,45 @@
         <!-- Main Content Area -->
         <div class="col-span-1 bg-white p-4">
             <h1 class="text-3xl font-bold mb-4">Hello World</h1>
-            <p>This is the main content of the dashboard.</p>
+            
+            <!-- Loop through team_data -->
+            {% for team, data in team_data.items %}
+                <div>
+                    <h2 class="text-xl font-bold">{{ team.teamName }}</h2>
+                    
+                    <!-- Display GitLab Access Repo Info -->
+                    <p>GitLab Access Repo Info:</p>
+                    <ul>
+                        <li>Token: {{ data.gitlab_access_repo_info.token }}</li>
+                        <li>URL: {{ data.gitlab_access_repo_info.url }}</li>
+                        <li>Project Name: {{ data.gitlab_access_repo_info.projectName }}</li>
+                    </ul>
+                    
+                    <!-- Display Users -->
+                    <p>Users:</p>
+                    <ul>
+                        {% for user in data.users %}
+                            <li>{{ user.username }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <!-- Display Moods -->
+                    <p>Moods:</p>
+                    <ul>
+                        {% for mood in data.moods %}
+                            <li>{{ mood }}</li>
+                        {% endfor %}
+                    </ul>
+                    
+                    <!-- Display Repos -->
+                    <p>Repos:</p>
+                    <ul>
+                        {% for repo in data.repos %}
+                            <li>{{ repo }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
