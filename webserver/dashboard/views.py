@@ -38,7 +38,7 @@ def home(request):
         users = team.users.all()
         moods = team.moods.all()
         repos = team.repos.all()
-        print("TEAM : " , team)
+        #print("TEAM : " , team)
         
         # Retrieve GitLab information using the stored GitLab access token and repository URL
         gitlab_repo = team.gitlabRepo
@@ -49,7 +49,7 @@ def home(request):
             'url': gitlab_repo.url,
             'projectName': gitlab_repo.projectName,
         }
-        print("RePO  : " , gitlab_access_repo_info)
+       #print("RePO  : " , gitlab_access_repo_info)
         # Store the data in the dictionary
         team_data[team] = {
             'users': users,
@@ -59,7 +59,7 @@ def home(request):
         }
     
 
-    print("TEAM DATA : " , team_data)
+    #print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'team_data': team_data})
 
@@ -187,51 +187,80 @@ class MoodView(APIView):
 
 #@require_http_methods(["GET", "POST"])
 
+# views.py
+#https://gitlab.paris-digital-lab.com
+#glpat-GdDcjCKWycUxtFzpqvnG
+
 @login_required(login_url="/login")
 def addNewToken(request):
     if request.method == 'GET':
-        # Si la méthode est GET, renvoyer le formulaire
+        # If the method is GET, redirect to a new page to display repositories
         form = GitlabAccessRepoForm()
         return render(request, "dashboard/token_form.html", {'form': form})
 
-    elif request.method == 'POST':
-        # Si la méthode est POST, valider le formulaire
-        form = GitlabAccessRepoForm(request.POST)
+    elif request.method == 'POST' and 'selected_repos' in request.POST:
+        selected_repos = request.POST.getlist('selected_repos')
+       
+        # Save the selected repositories to the database
+        for repo in selected_repos:
+            repo = repo.strip(" ").strip("[").strip("]").split(',')
+            for i in range(len(repo)):
+                repo[i] = repo[i].strip("`").strip("'").strip("'")
 
-        if form.is_valid():
-            # Si le formulaire est valide, enregistrer les données dans le modèle
-            res = gitAPI.list_projects_users(form.cleaned_data['url'] , form.cleaned_data['token']) 
+            data_dict = {
+            'token': request.POST.get('token', ''),
+            'url': request.POST.get('url', ''),
+            'projectName':repo[0],
+            }
 
+            
             gitlab_access_repo = GitlabAccessRepo(
-                token=form.cleaned_data['token'],
-                url=form.cleaned_data['url'],
-                projectName=res[0][0]
+                token=data_dict["token"],
+                url=data_dict["url"],
+                projectName=data_dict["projectName"]
             )
             gitlab_access_repo.save()
 
-
-             # Create TeamTable
+            # Create TeamTable
             team_table = TeamTable(
-                teamName=form.cleaned_data['projectName'],
+                teamName=repo[0],
                 gitlabRepo=gitlab_access_repo
             )
             team_table.save()
 
+            print("RESPONSE ", repo)
+            # Split the repo string to get individual usernames
+
             # Add users to TeamTable
-            for username in res[0][1:]:
+            for username in repo[1:]:
+                # print("USER ", username)
                 user, created = Utilisateur.objects.get_or_create(username=username)
                 team_table.users.add(user)
 
             # Add TeamTable to the teams of the currently logged-in coach
             coach = request.user.coach
             coach.teams.add(team_table)
-        
-            print(res)
 
-            # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
+        return redirect("/")  # Redirect to the dashboard or 
 
-            # Retourner une réponse, vous pouvez également rediriger vers une autre vue ou un template
-            return redirect("/addNewToken")
+    elif request.method == 'POST':
+        # If the method is POST, validate the form
+        form = GitlabAccessRepoForm(request.POST)
+
+        if form.is_valid():
+            # If the form is valid, get the list of repositories
+            res = gitAPI.list_projects_users(form.cleaned_data['url'], form.cleaned_data['token'])
+
+            # Pass the list of repositories to a new template for selection
+            return render(request, "dashboard/select_repositories.html", {'form': form, 'repos': res})
         else:
-            # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
+            # If the form is not valid, return to the form with errors
             return render(request, "dashboard/token_form.html", {'form': form})
+
+    # Handle the case when the user submits the form with selected repositories
+   
+
+    # Default case, return to the same page
+    form = GitlabAccessRepoForm()
+    return render(request, "dashboard/token_form.html", {'form': form})
+    
