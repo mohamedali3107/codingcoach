@@ -192,7 +192,7 @@ class MoodView(APIView):
 #glpat-GdDcjCKWycUxtFzpqvnG
 
 @login_required(login_url="/login")
-def addNewToken(request):
+def add_new_token(request):
     if request.method == 'GET':
         # If the method is GET, redirect to a new page to display repositories
         form = GitlabAccessRepoForm()

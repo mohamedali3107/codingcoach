@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Add Team</h2>
-  <form  method="post" action="{% url 'dashboard:addNewToken' %}">
+  <form  method="post" action="{% url 'dashboard:add_new_token' %}">
     {% csrf_token %}
     {{ form.as_p }}
     <button  type="submit">Submit</button>

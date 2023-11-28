@@ -10,7 +10,7 @@ urlpatterns = [
     path('addTeam/' , views.addTeam , name="addTeam"), 
     path('createUser/' ,views.create_user , name="createUser" ),
     path('sendMood/', views.MoodView.as_view(), name="Mood"),
-    path("addNewToken/" , views.addNewToken , name="addNewToken" ),
+    path("add_new_token/" , views.add_new_token , name="add_new_token" ),
     path("updateRepo/" , views.updateRepo , name="updateRepo"),
     
 ]
