@@ -9,7 +9,7 @@ class CoachModelAdmin(admin.ModelAdmin):
 
 @admin.register(Utilisateur)
 class UtilisateurModelAdmin(admin.ModelAdmin):
-    list_display = ('username', 'email')
+    list_display = ('username',)
 
 @admin.register(GitlabAccessRepo)
 class GitlabAccessRepoModelAdmin(admin.ModelAdmin):

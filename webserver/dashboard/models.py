@@ -6,7 +6,7 @@ from django.contrib.auth.models import User, BaseUserManager
 
 class Utilisateur(models.Model):
     id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    #email = models.EmailField(unique=True , bla)
     username = models.CharField(max_length=30, unique=True)
 
     def __str__(self):

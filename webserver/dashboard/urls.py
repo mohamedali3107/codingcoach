@@ -11,5 +11,5 @@ urlpatterns = [
     path('createUser/' ,views.create_user , name="createUser" ),
     path('sendMood/', views.MoodView.as_view(), name="Mood"),
     path("addNewToken/" , views.addNewToken , name="addNewToken" ),
-
+    path("updateRepo/" , views.updateRepo , name="updateRepo"),
 ]

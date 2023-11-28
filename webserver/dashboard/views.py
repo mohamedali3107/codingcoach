@@ -1,6 +1,6 @@
 import datetime
 from django.http import HttpRequest, HttpResponse
-from .models import Coach, GitlabAccessRepo, TeamMood, TeamTable, Utilisateur
+from .models import Coach, GitlabAccessRepo, TeamMood, TeamRepo, TeamTable, Utilisateur
 
 from.serializers import MoodSerializer
 from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
@@ -60,6 +60,53 @@ def home(request):
     print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'team_data': team_data})
+
+
+@login_required(login_url="/login")
+def updateRepo(request):
+    # Assuming the logged-in user is a coach
+    coach: Coach = request.user.coach
+
+    # Retrieve all teams managed by the coach
+    teams_managed_by_coach = coach.teams.all()
+
+    for team in teams_managed_by_coach:
+        # Retrieve GitLab information using the stored GitLab access token and repository URL
+        gitlab_repo = team.gitlabRepo
+
+        # Retrieve information from the GitlabAccessRepo model
+        gitlab_access_repo_info = {
+            'token': gitlab_repo.token,
+            'url': gitlab_repo.url,
+            'projectName': gitlab_repo.projectName,
+        }
+
+        # Compute information using the gitAPI.computeAll function
+        computed_info = gitAPI.computeAll(
+            gitlab_access_repo_info['url'],
+            gitlab_access_repo_info['token'],
+            gitlab_access_repo_info['projectName']
+        )
+
+        print(computed_info)
+
+        # Create an instance of TeamRepo and save the computed information
+        team_repo = TeamRepo(
+            branchNumber=computed_info['get_branch_number'],
+            branchBehindMax=computed_info['most_behind_branch'],
+            branchAheadMax=computed_info['most_ahead_branch'],
+            lastPrTime=computed_info['last_PR_time'],
+            commitQuality=computed_info['rate_commit'],
+        )
+        team_repo.save()
+
+        # Add the TeamRepo instance to the current team
+        team.repos.add(team_repo)
+
+    return redirect("/")
+
+
+
 
 @login_required(login_url="/login")
 def addTeam(request):
@@ -145,24 +192,25 @@ def addNewToken(request):
 
         if form.is_valid():
             # Si le formulaire est valide, enregistrer les données dans le modèle
+            res = gitAPI.list_projects_users(form.cleaned_data['url'] , form.cleaned_data['token']) 
+
             gitlab_access_repo = GitlabAccessRepo(
                 token=form.cleaned_data['token'],
                 url=form.cleaned_data['url'],
-                projectName=form.cleaned_data['projectName']
+                projectName=res[0][0]
             )
             gitlab_access_repo.save()
 
-            res = gitAPI.list_projects_users(form.cleaned_data['url'] , form.cleaned_data['token']) 
 
              # Create TeamTable
             team_table = TeamTable(
-                teamName=res[0],
+                teamName=form.cleaned_data['projectName'],
                 gitlabRepo=gitlab_access_repo
             )
             team_table.save()
 
             # Add users to TeamTable
-            for username in res[1:]:
+            for username in res[0][1:]:
                 user, created = Utilisateur.objects.get_or_create(username=username)
                 team_table.users.add(user)
 
@@ -175,7 +223,7 @@ def addNewToken(request):
             # Vous pouvez également appeler la fonction gitAPI.list_projects_users ici si nécessaire
 
             # Retourner une réponse, vous pouvez également rediriger vers une autre vue ou un template
-            return redirect("/dashboard")
+            return redirect("/addNewToken")
         else:
             # Si le formulaire n'est pas valide, le renvoyer avec les erreurs
             return render(request, "dashboard/token_form.html", {'form': form})
