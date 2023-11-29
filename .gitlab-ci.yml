@@ -35,3 +35,5 @@ deploy:
     - docker build -t $REGISTRY_IMAGE_MYSQL -f ./.devcontainer/DockerfileMysql ./.devcontainer
     - docker push $REGISTRY_IMAGE_DJANGO
     - docker push $REGISTRY_IMAGE_MYSQL
+  only:
+    - tags
