@@ -38,7 +38,10 @@ def home(request):
         users = team.users.all()
         moods = team.moods.all()
         repos = team.repos.all()
-        last_repo = repos.latest('timeStamp')
+        if repos:
+            last_repo = repos.latest('timeStamp')
+        else:
+            last_repo = repos
         #print("TEAM : " , team)
         
         # Retrieve GitLab information using the stored GitLab access token and repository URL
