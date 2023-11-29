@@ -1,0 +1,40 @@
+stages:
+  - test
+  - deploy
+
+variables:
+  MYSQL_DATABASE: "dashboard"
+  MYSQL_USER: "root"
+  MYSQL_PASSWORD: "root"
+  MYSQL_HOST: "mysql"
+  DJANGO_DB_ENGINE: "mysql"
+  DJANGO_DB_NAME: $MYSQL_DATABASE
+  DJANGO_DB_USER: $MYSQL_USER
+  DJANGO_DB_PASSWORD: $MYSQL_PASSWORD
+  DJANGO_DB_HOST: $MYSQL_HOST
+  DJANGO_DB_PORT: "3306"
+  CI_REGISTRY_IMAGE: "gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach"
+  REGISTRY_IMAGE_DJANGO: $CI_REGISTRY_IMAGE/django
+  REGISTRY_IMAGE_MYSQL: $CI_REGISTRY_IMAGE/mysql
+
+image: docker:stable
+
+services:
+  - docker:dind 
+
+test:
+  stage: test
+  script:
+    - echo "TESTS"
+
+deploy:
+  stage: deploy
+  script:
+    - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker build -t $REGISTRY_IMAGE_DJANGO -f ./webserver/DockerfileDjango ./webserver
+    - docker build -t $REGISTRY_IMAGE_MYSQL -f ./.devcontainer/DockerfileMysql ./.devcontainer
+    - docker push $REGISTRY_IMAGE_DJANGO
+    - docker push $REGISTRY_IMAGE_MYSQL
+  only:
+    - main  
+

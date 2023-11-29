@@ -1,0 +1,15 @@
+FROM ubuntu:22.04
+ENV UBUNTU_FRONTEND=noninteractive
+
+RUN apt-get update -yq
+RUN apt install -yq python3 python3-pip 
+#RUN apt install -yq python3-django 
+WORKDIR /app 
+#COPY requirements.txt ./
+
+COPY . .
+
+RUN pip install -r requirements.txt
+
+EXPOSE 8000
+#CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
