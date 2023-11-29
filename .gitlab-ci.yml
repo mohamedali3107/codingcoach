@@ -56,5 +56,5 @@ deploy:
     - docker build -t $CI_REGISTRY_IMAGE .
     - docker push $CI_REGISTRY_IMAGE
 
-only:
-  - cicd
+# only:
+#   - cicd
