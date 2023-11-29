@@ -22,12 +22,28 @@ variables:
   REGISTRY_IMAGE_DJANGO: $CI_REGISTRY_IMAGE/django
   REGISTRY_IMAGE_MYSQL: $CI_REGISTRY_IMAGE/mysql
 
-before_script:
-  - apt-get update -qy
-  - apt-get install -y python3-pip python3-dev
-  - pip install -r webserver/requirements.txt
-  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
 
+default:
+  image: ubuntu:22.04
+  #
+  # Pick zero or more services to be used on all builds.
+  # Only needed when using a docker container to run your tests in.
+  # Check out: https://docs.gitlab.com/ee/ci/services/index.html
+  services:
+    - mysql:8.0
+  #
+  # This folder is cached between builds
+  # http://docs.gitlab.com/ee/ci/yaml/README.html#cache
+  cache:
+    paths:
+      - ~/.cache/pip/
+  before_script:
+    - apt -y update
+    - apt -y install apt-utils
+    - apt -y install net-tools python3.8 python3-pip mysql-client libmysqlclient-dev
+    - apt -y upgrade
+    - pip3 install -r requirements.txt
+  
 
 test:
   stage: test
@@ -39,6 +55,9 @@ test:
 build:
   stage: build
   script:
+    - python3 manage.py makemigrations
+    - python3 manage.py migrate
+    - python3 manage.py check
     - docker-compose build
     - docker push $REGISTRY_IMAGE_DJANGO
     - docker push $REGISTRY_IMAGE_MYSQL
