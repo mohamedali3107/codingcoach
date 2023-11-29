@@ -3,29 +3,29 @@ version: "3.8"
 services:
   django:
     build:
-      context: ./dashboard
+      context: ./webserver
       dockerfile: DockerfileDjango
     networks:
       - codingcoachNet
     ports:
       - 8000:8000
 
-  node:
-    build:
-      context: ./node
-      dockerfile: DockerfileNode
-    networks:
-      - codingcoachNet
+  # node:
+  #   build:
+  #     context: ./node
+  #     dockerfile: DockerfileNode
+  #   networks:
+  #     - codingcoachNet
 
-  dev:
-    build:
-      context: ./
-      dockerfile: .devcontainer/DockerfileDev
-    command: sleep infinity
-    networks:
-      - codingcoachNet
-    volumes:
-      - dev-data:/app
+  # dev:
+  #   build:
+  #     context: ./
+  #     dockerfile: .devcontainer/DockerfileDev
+  #   command: sleep infinity
+  #   networks:
+  #     - codingcoachNet
+  #   volumes:
+  #     - dev-data:/app
 
   mysql:
     image: mysql:latest

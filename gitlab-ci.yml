@@ -1,0 +1,55 @@
+stages:
+  - test
+  - build
+  - deploy
+
+variables:
+  # Set your environment variables here
+  MYSQL_DATABASE: "dashboard"
+  MYSQL_USER: "root"
+  MYSQL_PASSWORD: "root"
+  MYSQL_HOST: "mysql"
+  #DJANGO_SECRET_KEY: "your_django_secret_key"
+  #DJANGO_DEBUG: "False"
+  #DJANGO_ALLOWED_HOSTS: "your_domain.com"
+  DJANGO_DB_ENGINE: "mysql"
+  DJANGO_DB_NAME: $MYSQL_DATABASE
+  DJANGO_DB_USER: $MYSQL_USER
+  DJANGO_DB_PASSWORD: $MYSQL_PASSWORD
+  DJANGO_DB_HOST: $MYSQL_HOST
+  DJANGO_DB_PORT: "3306"
+  CI_REGISTRY_IMAGE : 
+  REGISTRY_IMAGE_DJANGO: $CI_REGISTRY_IMAGE/django
+  REGISTRY_IMAGE_MYSQL: $CI_REGISTRY_IMAGE/mysql
+
+before_script:
+  - apt-get update -qy
+  - apt-get install -y python3-pip python3-dev
+  - pip install -r webserver/requirements.txt
+  - echo "$CI_REGISTRY_PASSWORD" | docker login -u "$CI_REGISTRY_USER" --password-stdin $CI_REGISTRY
+
+
+test:
+  stage: test
+  script:
+    - echo "TESTS"
+  only:
+    - tags 
+  
+build:
+  stage: build
+  script:
+    - docker-compose build
+    - docker push $REGISTRY_IMAGE_DJANGO
+    - docker push $REGISTRY_IMAGE_MYSQL
+  only:
+    - tags 
+  
+deploy:
+  stage: deploy
+  only:
+    - tags
+  script:
+    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE .
+    - docker push $CI_REGISTRY_IMAGE
