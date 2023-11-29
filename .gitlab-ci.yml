@@ -20,7 +20,8 @@ variables:
 
 image: docker:stable
 
-services: docker:dind 
+services:
+  - docker:dind 
 
 test:
   stage: test
