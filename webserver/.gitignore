@@ -10,7 +10,7 @@ venv/*
 env/*
 
 # Fichiers de configuration
-# *.sqlite3
+*.sqlite3
 *.pyc
 *.pyo
 *.pyd
@@ -49,7 +49,7 @@ htmlcov/*
 
 # Dossiers générés par Django
 __pycache__/*
-#db.sqlite3
+db.sqlite3
 /media/*
 /static/*
 
