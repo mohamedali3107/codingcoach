@@ -1,6 +1,5 @@
 stages:
   - test
-  - build
   - deploy
 
 variables:
@@ -18,43 +17,22 @@ variables:
   REGISTRY_IMAGE_DJANGO: $CI_REGISTRY_IMAGE/django
   REGISTRY_IMAGE_MYSQL: $CI_REGISTRY_IMAGE/mysql
 
-default:
-  image: ubuntu:22.04
 
-services:
-  - mysql:8.0
+image: docker:stable
 
-cache:
-  paths:
-    - ~/.cache/pip/
-
-before_script:
-  - apt -y update
-  - apt -y install apt-utils
-  - apt -y install net-tools python3 python3-pip mysql-client libmysqlclient-dev
-  - pip3 install -r webserver/requirements.txt
+services: docker:dind 
 
 test:
   stage: test
   script:
     - echo "TESTS"
 
-build:
-  stage: build
-  script:
-    - python3 manage.py makemigrations
-    - python3 manage.py migrate
-    - python3 manage.py check
-    - docker-compose build
-    - docker push $REGISTRY_IMAGE_DJANGO
-    - docker push $REGISTRY_IMAGE_MYSQL
 
 deploy:
   stage: deploy
   script:
-    - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
-    - docker build -t $CI_REGISTRY_IMAGE .
-    - docker push $CI_REGISTRY_IMAGE
+    - docker login gitlab.paris-digital-lab.com:5050
+    - docker build -t gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach ./webserver/DockerfileDjango
+    - docker build -t gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach ./.devcontainer/DockerfileMysql
+    - docker push gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach
 
-# only:
-#   - cicd

@@ -1,0 +1,14 @@
+# Utilisez l'image MySQL officielle en tant que base
+FROM mysql:latest
+
+# Définissez les variables d'environnement nécessaires
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=dashboard
+
+# Exposez le port 3306
+EXPOSE 3306
+
+# Vous pouvez également ajouter d'autres configurations ou scripts d'initialisation ici si nécessaire
+
+# Commande par défaut à exécuter lors du démarrage du conteneur
+CMD ["mysqld"]
