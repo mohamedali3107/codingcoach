@@ -31,7 +31,7 @@ deploy:
   stage: deploy
   script:
     - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
-    - docker build -t $REGISTRY_IMAGE_DJANGO ./webserver/DockerfileDjango
-    - docker build -t $REGISTRY_IMAGE_MYSQL ./.devcontainer/DockerfileMysql
+    - docker build -t $REGISTRY_IMAGE_DJANGO -f ./webserver/DockerfileDjango ./webserver
+    - docker build -t $REGISTRY_IMAGE_MYSQL -f ./.devcontainer/DockerfileMysql ./.devcontainer
     - docker push $REGISTRY_IMAGE_DJANGO
     - docker push $REGISTRY_IMAGE_MYSQL
