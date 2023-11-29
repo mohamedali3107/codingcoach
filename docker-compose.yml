@@ -2,6 +2,7 @@ version: "3.8"
 
 services:
   django:
+    command: python3 manage.py makemigrations
     build:
       context: ./webserver
       dockerfile: DockerfileDjango
