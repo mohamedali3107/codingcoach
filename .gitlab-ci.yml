@@ -17,22 +17,21 @@ variables:
   REGISTRY_IMAGE_DJANGO: $CI_REGISTRY_IMAGE/django
   REGISTRY_IMAGE_MYSQL: $CI_REGISTRY_IMAGE/mysql
 
-
 image: docker:stable
 
-services: docker:dind 
+services:
+  - docker:dind 
 
 test:
   stage: test
   script:
     - echo "TESTS"
 
-
 deploy:
   stage: deploy
   script:
-    - docker login gitlab.paris-digital-lab.com:5050
-    - docker build -t gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach ./webserver/DockerfileDjango
-    - docker build -t gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach ./.devcontainer/DockerfileMysql
-    - docker push gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach
-
+    - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+    - docker build -t $REGISTRY_IMAGE_DJANGO ./webserver/DockerfileDjango
+    - docker build -t $REGISTRY_IMAGE_MYSQL ./.devcontainer/DockerfileMysql
+    - docker push $REGISTRY_IMAGE_DJANGO
+    - docker push $REGISTRY_IMAGE_MYSQL
