@@ -38,6 +38,7 @@ def home(request):
         users = team.users.all()
         moods = team.moods.all()
         repos = team.repos.all()
+        last_repo = repos.latest('timeStamp')
         #print("TEAM : " , team)
         
         # Retrieve GitLab information using the stored GitLab access token and repository URL
@@ -54,7 +55,7 @@ def home(request):
         team_data[team] = {
             'users': users,
             'moods': moods,
-            'repos': repos,
+            'repo': last_repo,
             'gitlab_access_repo_info': gitlab_access_repo_info,
         }
     
