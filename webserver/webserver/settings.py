@@ -29,7 +29,7 @@ DEBUG = True
 
 # settings.py
 
-ALLOWED_HOSTS = ['localhost' , 'coding-assistant.centralesupelec.fr']
+ALLOWED_HOSTS = ['localhost' , 'coding-assistant.centralesupelec.fr', 'https://coding-assistant.centralesupelec.fr']
 
 
 # Application definition
