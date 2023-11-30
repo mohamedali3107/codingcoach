@@ -42,11 +42,12 @@ build:
 deploy:
   stage: deploy
   script:
+    - mkdir -p ~/.ssh
     - echo $SSH_PRIVATE_KEY > ~/.ssh/id_rsa
     - chmod 600 ~/.ssh/id_rsa
-    - ssh user@your-vm-ip "cd /home/ubuntu/codingcoach && \
+    - ssh ubuntu@coding-assistant.centralesupelec.fr "cd /home/ubuntu/codingcoach && \
       sudo docker-compose down && \
       sudo docker-compose pull && \
       sudo docker-compose up -d"
-  only:
+   only:
     - main 
