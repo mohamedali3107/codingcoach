@@ -30,6 +30,8 @@ DEBUG = True
 # settings.py
 
 ALLOWED_HOSTS = ['localhost' , 'coding-assistant.centralesupelec.fr', 'https://coding-assistant.centralesupelec.fr']
+CSRF_TRUSTED_ORIGINS = ['https://coding-assistant.centralesupelec.fr','https://*.127.0.0.1']
+
 
 
 # Application definition
