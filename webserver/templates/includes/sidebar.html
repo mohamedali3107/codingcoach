@@ -80,9 +80,6 @@
         {% endif %}
 
         {% if request.user.is_authenticated and not request.user.is_superuser %}
-        <li class="nav-item pcoded-menu-caption">
-          <label>UI Element</label>
-        </li>
         {% comment %} <li
           data-username="basic components Button Alert Badges breadcrumb Paggination progress Tooltip popovers Carousel Cards Collapse Tabs pills Modal Grid System Typography Extra Shadows Embeds"
           class="nav-item pcoded-hasmenu {% if 'basic_components' in parent %}active pcoded-trigger{% endif %}">
@@ -112,11 +109,6 @@
           <a href="{% url 'basic_tables' %}" class="nav-link "><span class="pcoded-micon"><i
                 class="feather icon-server"></i></span><span class="pcoded-mtext">Table</span></a>
         </li> {% endcomment %}
-  
-  
-        <li class="nav-item pcoded-menu-caption">
-          <label>Pages</label>
-        </li>
         {% comment %} <li data-username="Profile Page" class="nav-item {% if 'profile' in segment %}active{% endif %}"><a href="{% url 'profile' %}" class="nav-link"><span
               class="pcoded-micon"><i class="feather icon-user"></i></span><span class="pcoded-mtext">Profile
               Page</span></a>
