@@ -16,6 +16,12 @@
         <li class="nav-item pcoded-menu-caption">
           <a href="{% url 'dashboard:add_new_token' %}">New token</a>
         </li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item pcoded-menu-caption">
+          <a href="{% url 'logout' %}">Log out</a>
+        </li>
+        {% endif %}
+
         {% comment %} <li data-username="dashboard Default Ecommerce CRM Analytics Crypto Project" class="nav-item {% if 'index' in segment %}active{% endif %}">
           {% if request.user.is_superuser %}
           <a href="{% url 'admin:index' %}" class="nav-link ">
