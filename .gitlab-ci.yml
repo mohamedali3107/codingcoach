@@ -41,10 +41,17 @@ build:
 
 deploy:
   stage: deploy
-  script:
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+    - echo -e "Host $SSH_HOST\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
     - echo "$SSH_PRIVATE_KEY" 
-    - echo "$SSH_PRIVATE_KEY" > id_rsa
-    - chmod 600 id_rsa
-    - ssh -i id_rsa ubuntu@coding-assistant.centralesupelec.fr "cd /home/ubuntu/codingcoach && sudo docker-compose down && sudo  docker-compose pull &&  sudo docker-compose up -d"
+    - echo "$SSH_HOST" 
+
+  script:
+    - ssh $SSH_USER@$SSH_HOST
+     "cd /home/ubuntu/codingcoach && sudo docker-compose down && sudo  docker-compose pull &&  sudo docker-compose up -d"
   only:
     - main 
