@@ -22,12 +22,9 @@ def home(request):
     # Assuming the logged-in user is a coach
     coach : Coach = request.user.coach 
 
-    print("COACH :" , coach )
-
     #print(coach)
     # Retrieve all teams managed by the coach
     teams_managed_by_coach = coach.teams.all()
-    print("TEAMS  :" , teams_managed_by_coach )
 
     # Create dictionaries to store users, moods, and repos for each team
     team_data = {}
@@ -42,7 +39,6 @@ def home(request):
             last_repo = repos.latest('timeStamp')
         else:
             last_repo = repos
-        #print("TEAM : " , team)
         
         # Retrieve GitLab information using the stored GitLab access token and repository URL
         gitlab_repo = team.gitlabRepo
@@ -61,8 +57,9 @@ def home(request):
             'repo': last_repo,
             'gitlab_access_repo_info': gitlab_access_repo_info,
         }
+        
+    team_data['coach'] = {'user': coach.username}
     
-
     #print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'team_data': team_data})
