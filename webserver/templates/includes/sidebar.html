@@ -36,10 +36,10 @@
           class="nav-item pcoded-hasmenu">
           <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
                 class="feather icon-lock"></i></span><span class="pcoded-mtext">Authentication</span></a>
-          {% comment %} <ul class="pcoded-submenu">
-            <li class=""><a href="{% url 'login' %}" class="">Sign IN</a></li>
-            <li class=""><a href="{% url 'register' %}" class="">Sign UP</a></li>
-          </ul> {% endcomment %}
+          <ul class="pcoded-submenu">
+            <li class=""><a href="{% url 'login' %}" class="" target="_blank">Sign in</a></li>
+            <li class=""><a href="{% url 'dashboard:signup' %}" class="" target="_blank">Sign up</a></li>
+          </ul> 
         </li>
         {% endif %}
 
@@ -110,16 +110,6 @@
   
         <li class="nav-item pcoded-menu-caption">
           <label>Pages</label>
-        </li>
-        <li
-          data-username="Authentication Sign up Sign in reset password Change password Personal information profile settings map form subscribe"
-          class="nav-item pcoded-hasmenu">
-          <a href="javascript:" class="nav-link "><span class="pcoded-micon"><i
-                class="feather icon-lock"></i></span><span class="pcoded-mtext">Authentication</span></a>
-          <ul class="pcoded-submenu">
-            <li class=""><a href="{% url 'dashboard:signup' %}" class="" target="_blank">Sign up</a></li>
-            <li class=""><a href="{% url 'login' %}" class="" target="_blank">Sign in</a></li>
-          </ul>
         </li>
         {% comment %} <li data-username="Profile Page" class="nav-item {% if 'profile' in segment %}active{% endif %}"><a href="{% url 'profile' %}" class="nav-link"><span
               class="pcoded-micon"><i class="feather icon-user"></i></span><span class="pcoded-mtext">Profile
