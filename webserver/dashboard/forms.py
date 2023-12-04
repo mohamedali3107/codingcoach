@@ -19,10 +19,10 @@ from .models import Coach, TeamTable, GitlabAccessRepo
 
 
 class RegisterForm(UserCreationForm):
-    email = forms.EmailField(required=True)
+    #email = forms.EmailField(required=True)
     class Meta:
         model = Coach 
-        fields = ['username', "email" ,'password1' , "password2"]
+        fields = ['username', 'password1' , "password2"]
 
 
 class TeamTableForm(forms.ModelForm):
