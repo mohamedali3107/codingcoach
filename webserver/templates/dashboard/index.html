@@ -65,7 +65,7 @@
         <div class="col-xl-12 col-md-12">
           <div class="card Recent-Users">
     
-            {% if team_data.items %}
+            {% if data.team_data.items %}
     
               <div class="card-header">
                 <h5>Dashboard
@@ -125,7 +125,7 @@
                     </thead>
     
                     <tbody>
-                        {% for team, data in team_data.items %}
+                        {% for team, data in data.team_data.items %}
     
                         <tr class="unread">
                           <td><img class="rounded-circle" style="width:40px;" src="{% static 'assets/images/user/avatar-1.jpg' %}"
@@ -177,13 +177,12 @@
 
                           <td>
                             <a href="#" class="label theme-bg2 text-white f-12">View</a>
-                            <a href="#" class="label theme-bg text-white f-12">Delete</a>
+                            <a href="suppressTeam/?teamName={{ team.teamName }}" class="label theme-bg text-white f-12">Delete</a>
                           </td>
                         </tr>
     
                       {% endfor %}
                     </tbody>
-                    
                   </table>
                 </div>
               </div>
