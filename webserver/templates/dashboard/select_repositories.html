@@ -6,7 +6,9 @@
     <form method="post" action="{% url 'dashboard:add_new_token' %}">
         {% csrf_token %}
         
-        {{ form.as_p }}
+        <table>
+          {{ form.as_table }}
+        </table>
     
         <!-- Serialize the form data and include it as hidden fields -->
         {% for field in form %}
