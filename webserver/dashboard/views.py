@@ -121,12 +121,13 @@ def dash(request):
             'repo': last_repo,
             'gitlab_access_repo_info': gitlab_access_repo_info,
         }
-        
-    team_data['coach'] = {'user': coach.username}
     
+    data = {}
+    data['team_data'] = team_data
+    data['coach_data'] = {'user': coach.username}    
     #print("TEAM DATA : " , team_data)
 
-    return render(request, 'dashboard/index.html', {'team_data': team_data})
+    return render(request, 'dashboard/index.html', {'data': data})
 
 
 @login_required(login_url="/login")
@@ -185,6 +186,20 @@ def suppressTeam(request):
     coach.teams.remove(team)
     
     coach.save()
+
+    return redirect("/")
+
+
+@login_required(login_url="/login")
+def teamView(request):
+    coach: Coach = request.user.coach
+
+    # Retrieve the team to suppress
+    team_name = request.GET.get('teamName','None')
+    print(team_name)
+    team = TeamTable.objects.get(teamName=team_name)
+    
+    coach.teams.remove(team)
 
     return redirect("/")
 
