@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'dashboard.apps.DashboardConfig',
     'llmcoach.apps.LlmcoachConfig',
+    'django_cas_ng', 
 ]
 
 MIDDLEWARE = [
@@ -56,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_cas_ng.middleware.CASMiddleware',
 ]
 
 ROOT_URLCONF = 'webserver.urls'
@@ -155,6 +157,15 @@ STATICFILES_DIRS = (
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'django_cas_ng.backends.CASBackend',  # Add this line
+]
+
+CAS_SERVER_URL = 'https://cas2.centralesupelec.fr/cas/'
+CAS_VERSION = '3'
 
 LOGIN_REDIRECT_URL = '/' 
 LOGOUT_REDIRECT_URL = '/login' 
