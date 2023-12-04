@@ -1,0 +1,42 @@
+version: '3.8'
+
+services:
+  django:
+    build:
+      context: ./webserver
+      dockerfile: DockerfileDjango
+    ports:
+      - "8000:8000"  # Adjust the port if necessary
+    depends_on:
+      - mysql
+    command: >
+      bash -c "
+        sleep 5 && 
+        python3 manage.py makemigrations &&
+        python3 manage.py migrate  &&
+        python3 manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_ENGINE=mysql
+      - DB_NAME=dashboard
+      - DB_USERNAME=root
+      - DB_PASS=root
+      - DB_HOST=mysql
+      - DB_PORT=3306
+
+  mysql:
+    image: gitlab.paris-digital-lab.com:5050/centralesupelec-fall2023-p2/codingcoach/mysql:latest
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: dashboard
+    volumes:
+      - mysql-data:/var/lib/mysql  # Mount the volume into the MySQL cont
+    ports:
+      - "3306:3306"  # Adjust the port if necessary
+
+networks:
+  codingcoachNet:
+    driver: bridge
+
+volumes:
+  mysql-data:
