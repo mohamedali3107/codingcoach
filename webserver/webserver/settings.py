@@ -167,5 +167,5 @@ AUTHENTICATION_BACKENDS = [
 CAS_SERVER_URL = 'https://cas2.centralesupelec.fr/cas/'
 CAS_VERSION = '3'
 
-LOGIN_REDIRECT_URL = '/' 
+LOGIN_REDIRECT_URL = '/dash' 
 LOGOUT_REDIRECT_URL = '/login' 
