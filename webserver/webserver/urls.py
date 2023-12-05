@@ -24,7 +24,8 @@ urlpatterns = [
     #path("dashboard/" , include('dashboard.urls' )), 
 
     path("" , include('django.contrib.auth.urls')), 
-    path("llmcoach/" , include("llmcoach.urls")) , 
     path('cas/login', django_cas_ng.views.LoginView.as_view(), name='cas_ng_login'),
     path('cas/logout', django_cas_ng.views.LogoutView.as_view(), name='cas_ng_logout'),
-]
+    path("llmcoach/" , include("llmcoach.urls")) , 
+
+] 

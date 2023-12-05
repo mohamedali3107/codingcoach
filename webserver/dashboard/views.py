@@ -65,6 +65,54 @@ def home(request):
     return render(request, 'dashboard/index.html', {'team_data': team_data})
 
 
+@user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
+def home(request):
+    # Assuming the logged-in user is a coach
+    coach : Coach = request.user.coach 
+
+    #print(coach)
+    # Retrieve all teams managed by the coach
+    teams_managed_by_coach = coach.teams.all()
+
+    # Create dictionaries to store users, moods, and repos for each team
+    team_data = {}
+    gitlab_access_repo_info = {}
+
+    for team in teams_managed_by_coach:
+        # Retrieve users, moods, and repos for each team
+        users = team.users.all()
+        moods = team.moods.all()
+        repos = team.repos.all()
+        if repos:
+            last_repo = repos.latest('timeStamp')
+        else:
+            last_repo = repos
+        
+        # Retrieve GitLab information using the stored GitLab access token and repository URL
+        gitlab_repo = team.gitlabRepo
+
+        # Retrieve information from the GitlabAccessRepo model
+        gitlab_access_repo_info = {
+            'token': gitlab_repo.token,
+            'url': gitlab_repo.url,
+            'projectName': gitlab_repo.projectName,
+        }
+       #print("RePO  : " , gitlab_access_repo_info)
+        # Store the data in the dictionary
+        team_data[team] = {
+            'users': users,
+            'moods': moods,
+            'repo': last_repo,
+            'gitlab_access_repo_info': gitlab_access_repo_info,
+        }
+        
+    team_data['coach'] = {'user': coach.username}
+    
+    #print("TEAM DATA : " , team_data)
+
+    return render(request, 'dashboard/index.html', {'team_data': team_data})
+
+
 @login_required(login_url="/login")
 def updateRepo(request):
     # Assuming the logged-in user is a coach

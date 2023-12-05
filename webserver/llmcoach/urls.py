@@ -20,4 +20,7 @@ from . import views
 app_name = "llmcoach"
 urlpatterns = [
     path("" , views.home , name="llmcoach") , 
+    path("home" , views.home , name="home") ,
+    path("chat" , views.CHAT , name="chat") ,
+    #path("evaluation" , views.EVALUATION , name="evaluation"),
 ]

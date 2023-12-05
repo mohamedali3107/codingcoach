@@ -60,3 +60,9 @@ class Coach(User):
     
 
 
+class CoachCas(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    teams = models.ManyToManyField(TeamTable, related_name='coaches', blank=True)
+
+    def __str__(self):
+        return self.user.username

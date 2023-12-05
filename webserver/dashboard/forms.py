@@ -22,7 +22,7 @@ class RegisterForm(UserCreationForm):
     #email = forms.EmailField(required=True)
     class Meta:
         model = Coach 
-        fields = ['username', 'password1' , "password2"]
+        fields = [ 'password1' , "password2"]
 
 
 class TeamTableForm(forms.ModelForm):
