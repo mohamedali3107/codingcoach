@@ -35,7 +35,6 @@ def most_ahead_branch(server, token, project, projObj = None):
             ahead_by = len(project.repository_compare('main', branch.name)['commits'])
             if ahead_by > max_ahead:
                 max_ahead = ahead_by
-                most_ahead = branch.name
     return max_ahead
 
 def most_behind_branch(server, token, project, projObj = None):
@@ -50,7 +49,6 @@ def most_behind_branch(server, token, project, projObj = None):
             behind_by = len(project.repository_compare(branch.name, 'main')['commits'])
             if behind_by > max_behind:
                 max_behind = behind_by
-                most_behind = branch.name
     return max_behind
 
 def get_branch_number(server, token, project, projObj = None):
