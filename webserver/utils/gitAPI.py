@@ -106,7 +106,7 @@ def rate_commits(server, token, project , projObj = None ):
     return 20 - malus
 
 
-def computeAll(server , token , project ) : 
+def compute_all(server , token , project ) : 
     project = get_project(server , token , project)
 
 

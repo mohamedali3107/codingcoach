@@ -132,8 +132,8 @@ def updateRepo(request):
             'projectName': gitlab_repo.projectName,
         }
 
-        # Compute information using the gitAPI.computeAll function
-        computed_info = gitAPI.computeAll(
+        # Compute information using the gitAPI.compute_all function
+        computed_info = gitAPI.compute_all(
             gitlab_access_repo_info['url'],
             gitlab_access_repo_info['token'],
             gitlab_access_repo_info['projectName']
