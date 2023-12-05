@@ -1,6 +1,6 @@
 import datetime
 from django.http import HttpRequest, HttpResponse
-from .models import Coach, GitlabAccessRepo, TeamMood, TeamRepo, TeamTable, Utilisateur
+from .models import Coach, CoachCas, GitlabAccessRepo, TeamMood, TeamRepo, TeamTable, Utilisateur
 
 from.serializers import MoodSerializer
 from .forms import GitlabAccessRepoForm, RegisterForm, TeamTableForm 
@@ -65,8 +65,23 @@ def home(request):
     return render(request, 'dashboard/index.html', {'team_data': team_data})
 
 
-@user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
-def home(request):
+@login_required(login_url="/login")
+def dash(request):
+    # Assuming the logged-in user is authenticated using CAS
+    cas_username = request.user.username
+    
+    # Try to retrieve CoachCas instance for the authenticated CAS user
+    coach_cas, created = CoachCas.objects.get_or_create(user__username=cas_username)
+
+    if created:
+        # If the CoachCas instance is created, set the user as a coach with no teams
+        coach = Coach.objects.create(username=cas_username)
+        coach_cas.teams.add(TeamTable.objects.create(teamName=f"{cas_username}'s Team", gitlabRepo=None))
+        coach.save()
+        coach_cas.save()
+    else:
+        # Retrieve the coach associated with the CoachCas instance
+        coach = coach_cas.user.coach
     # Assuming the logged-in user is a coach
     coach : Coach = request.user.coach 
 
