@@ -82,18 +82,18 @@
                     $('#refreshLink').click(function(e) {
                       e.preventDefault(); // Prevent default link behavior (i.e., navigating to #)
 
-                      // Show loading message while the updateRepo process is running
+                      // Show loading message while the update_repo process is running
                       $('#loadingMessage').show();
 
                       $.ajax({
-                        url: 'updateRepo/',
+                        url: 'update_repo/',
                         method: 'GET',
                         success: function(response) {
                           // Handle the response from the Django view
                           console.log('Success:', response);
-                          // Hide loading message after successful updateRepo execution
+                          // Hide loading message after successful update_repo execution
                           $('#loadingMessage').hide();
-                          // Reload the current page after successful updateRepo execution
+                          // Reload the current page after successful update_repo execution
                           location.reload()
                         },
                         error: function(xhr, status, error) {

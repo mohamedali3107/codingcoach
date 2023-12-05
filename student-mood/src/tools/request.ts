@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import axios from 'axios';
 
 export async function makePostRequest(values: any) {
-    const url = 'http://localhost:8000/sendMood/'; // Server's URL
+    const url = 'http://localhost:8000/send_mood/'; // Server's URL
 
     try {
         const response = await axios.post(url, values);

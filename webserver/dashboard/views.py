@@ -114,7 +114,7 @@ def home(request):
 
 
 @login_required(login_url="/login")
-def updateRepo(request):
+def update_repo(request):
     # Assuming the logged-in user is a coach
     coach: Coach = request.user.coach
 
@@ -160,7 +160,7 @@ def updateRepo(request):
 
 
 @login_required(login_url="/login")
-def addTeam(request):
+def add_team(request):
     if request.method == 'POST':
         form = TeamTableForm(request.POST)
         if form.is_valid():
