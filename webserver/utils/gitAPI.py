@@ -23,11 +23,7 @@ def list_projects_users(server, token):
     return L
 
 
-def most_ahead_branch(server, token, project, projObj = None):
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
+def most_ahead_branch(project):
     branches = project.branches.list()
     max_ahead = 0
     for branch in branches:
@@ -37,11 +33,7 @@ def most_ahead_branch(server, token, project, projObj = None):
                 max_ahead = ahead_by
     return max_ahead
 
-def most_behind_branch(server, token, project, projObj = None):
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
+def most_behind_branch(project):
     branches = project.branches.list()
     max_behind = 0
     for branch in branches:
@@ -51,32 +43,20 @@ def most_behind_branch(server, token, project, projObj = None):
                 max_behind = behind_by
     return max_behind
 
-def get_branch_number(server, token, project, projObj = None):
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
+def get_branch_number(project):
     return len(project.branches.list())
 
-def last_PR_time(server, token, project, projObj = None): # untested because nobody does PRs
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
+def last_PR_time(project): # untested because nobody does PRs
     merge_requests = project.mergerequests.list()
     if len(merge_requests) == 0:
         return None
     merge_requests.sort(key=lambda x: x.created_at, reverse=True)
     return merge_requests[0].created_at
 
-def compare_branches(server, token, project, projObj = None):
+def compare_branches(project):
     '''
     Takes a project and returns a list of branch names and numbers of commits ahead and behind.
     '''
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
     branches = project.branches.list()
     L = []
     for branch in branches:
@@ -86,11 +66,7 @@ def compare_branches(server, token, project, projObj = None):
             L.append((branch.name, ahead_by, behind_by))
     return L
 
-def rate_commits(server, token, project , projObj = None ):
-    if projObj == None : 
-        project = get_project(server, token, project)
-    else:
-        project = projObj
+def rate_commits(project):
     malus = 0
     for commit in project.commits.list(get_all=False):
         size = 0
@@ -110,13 +86,12 @@ def branches(project):
 def compute_all(server , token , project ) : 
     project = get_project(server , token , project)
 
-
-    rate_commit_m = rate_commits("","","",project)
-    compare_branchs_m = compare_branches("" ,"" , "" , project )
-    last_PR_time_m = last_PR_time("","","",project)
-    get_branch_number_m = get_branch_number("","","",project)
-    most_behind_branch_m = most_behind_branch("","","",project)
-    most_ahead_branch_m = most_ahead_branch("","","",project)
+    rate_commit_m = rate_commits(project)
+    compare_branchs_m = compare_branches(project )
+    last_PR_time_m = last_PR_time(project)
+    get_branch_number_m = get_branch_number(project)
+    most_behind_branch_m = most_behind_branch(project)
+    most_ahead_branch_m = most_ahead_branch(project)
 
     ret = {
         'rate_commit' : rate_commit_m, 
