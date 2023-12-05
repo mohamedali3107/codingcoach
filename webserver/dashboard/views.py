@@ -22,7 +22,6 @@ def home(request):
     # Assuming the logged-in user is a coach
     coach : Coach = request.user.coach 
 
-    # print(coach)
     # Retrieve all teams managed by the coach
     teams_managed_by_coach = coach.teams.all()
 
@@ -49,11 +48,29 @@ def home(request):
             'url': gitlab_repo.url,
             'projectName': gitlab_repo.projectName,
         }
-       #print("RePO  : " , gitlab_access_repo_info)
-        # Store the data in the dictionary
+        
+        average_mood = 0
+        n = 0
+        for user in users:
+            n += 1
+        i=0
+        if moods.exists() and users.exists():
+            day = moods[0].timeStamp.day
+            for mood in moods:
+                if mood.timeStamp.day == day:
+                    average_mood += mood.moodLevel
+                    if i == n:
+                        break
+                    i += 1
+            average_mood = average_mood/n
+        else:
+            average_mood = -1
+        
+        print(average_mood)
+            
         team_data[team] = {
             'users': users,
-            'moods': moods,
+            'mood': average_mood,
             'repo': last_repo,
             'gitlab_access_repo_info': gitlab_access_repo_info,
         }
@@ -61,7 +78,6 @@ def home(request):
     data = {}
     data['team_data'] = team_data
     data['coach_data'] = {'user': coach.username}    
-    #print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'data': data})
 
@@ -192,16 +208,47 @@ def suppressTeam(request):
 
 @login_required(login_url="/login")
 def teamView(request):
-    coach: Coach = request.user.coach
-
-    # Retrieve the team to suppress
-    team_name = request.GET.get('teamName','None')
-    print(team_name)
-    team = TeamTable.objects.get(teamName=team_name)
+    # Assuming the logged-in user is a coach
+    coach : Coach = request.user.coach 
     
-    coach.teams.remove(team)
+    # Retrieve the team
+    team_name = request.GET.get('teamName','None')
+    team = coach.teams.get(teamName=team_name)
 
-    return redirect("/")
+    # Create dictionaries to store users, moods, and repos for each team
+    data = {}
+    gitlab_access_repo_info = {}
+
+    # Retrieve users, moods, and repos for each team
+    users = team.users.all()
+    moods = team.moods.all()
+    repos = team.repos.all()
+    if repos:
+        last_repo = repos.latest('timeStamp')
+    else:
+        last_repo = repos
+    
+    # Retrieve GitLab information using the stored GitLab access token and repository URL
+    gitlab_repo = team.gitlabRepo
+
+    # Retrieve information from the GitlabAccessRepo model
+    gitlab_access_repo_info = {
+        'token': gitlab_repo.token,
+        'url': gitlab_repo.url,
+        'projectName': gitlab_repo.projectName,
+    }
+    
+    data['team'] = {
+        'name':team_name,
+        'users': users,
+        'moods': moods,
+        'repo': last_repo,
+        'gitlab_access_repo_info': gitlab_access_repo_info,
+    }
+    
+    data['coach'] = {'user': coach.username}    
+
+    return render(request, 'dashboard/repo.html', {'data': data})
 
 
 @login_required(login_url="/login")
