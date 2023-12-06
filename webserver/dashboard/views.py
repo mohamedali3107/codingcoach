@@ -252,20 +252,6 @@ def teamView(request):
 
 
 @login_required(login_url="/login")
-def teamView(request):
-    coach: Coach = request.user.coach
-
-    # Retrieve the team to suppress
-    team_name = request.GET.get('teamName','None')
-    print(team_name)
-    team = TeamTable.objects.get(teamName=team_name)
-    
-    coach.teams.remove(team)
-
-    return redirect("/")
-
-
-@login_required(login_url="/login")
 def add_team(request):
     if request.method == 'POST':
         form = TeamTableForm(request.POST)
