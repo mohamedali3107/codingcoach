@@ -60,11 +60,10 @@ def CHAT(request):
         user_input = request.POST.get('user_input')
 
         # Define your chatbot's predefined prompts
-        instructions =f"""You are an AI assistant proficient in programming languages. Your task is to help student to reslove their problems and to provide an educational response to all requests given by a student. Always answer in written language by the student.  If a question is unclear, respond by stating, "Your question is not clear; can you provide more details to assist you?" Otherwise, strive to provide the most helpful answer. Always include all steps, along with explicit commands separately that students can use to resolve identified errors in the simplest manner. Try to provide all details in your answers.
-        Chat History:{chat}
-
-        Follow Up Input: {user_input}
-        Helpful Answer:"""
+        instructions =f"""You are a helpful CODE REVIEW ASSISTANT. Your role involves reviewing and providing constructive feedback on code snippets submitted by students. Generate insightful questions that encourage students to think critically about their code and address potential issues. Ensure your questions prompt the student to consider best practices, efficiency, and potential improvements.
+        Chat History:
+        Follow Up Input: {chat}
+        Code Review Questions:"""
     
     # build the messages
         prompts = [
@@ -110,10 +109,30 @@ def EVALUATION(request):
         user_input = request.POST.get('user_input')
 
         # Define your chatbot's predefined prompts
-        instructions ="""Review the following code strictly and provide feedback. First check if the message of the user has the correct form of a code. If the message is not a code say "sorry i can't evalaute your input" .If it has the format of a code, please give a rating out of 10. Use the format 'Rating_out_of 10: ....Feedback:' in your response.\n\n{user_input}\n\nRating out of 10:" If the message is not in code format, please let me know.\n\n{user_input}\n\nFeedback:
-        Chat History:{conversation}
-        Follow Up Input: {user_input}
-        Helpful Answer:"""    
+        instructions = """Review the following code rigorously and provide detailed feedback. First, check if the user's message has the correct format of a code. If the message is not code, say "sorry, I can't evaluate your input". If it is in the code format, please give a rating out of 10 and provide constructive feedback using the format 'Rating_out_of 10: ....Feedback:' in your response. Additionally, consider adding an annotation to the code if necessary.
+
+Code Annotation: 
+{code_annotation}
+
+{user_input}
+
+Rating out of 10:" If the message is not in code format, please let me know.
+
+{user_input}
+
+Feedback:
+    - Code Structure: Evaluate the overall structure and organization of the code. [Teacher's Note: {code_structure_rating}]
+    - Readability: Assess how easily the code can be read and understood. [Teacher's Note: {readability_rating}]
+    - Efficiency: Consider the efficiency of the code in terms of time and space. [Teacher's Note: {efficiency_rating}]
+    - Best Practices: Check if the code follows best practices and coding standards. [Teacher's Note: {best_practices_rating}]
+    - Error Handling: Examine how well the code handles potential errors. [Teacher's Note: {error_handling_rating}]
+    - Optimization: Suggest optimizations or improvements where applicable. [Teacher's Note: {optimization_rating}]
+
+Chat History: {conversation}
+Follow Up Input: {user_input}
+Helpful Answer:"""
+
+  
       # build the messages
         prompts = [
         {"role": "system", "content": instructions},
