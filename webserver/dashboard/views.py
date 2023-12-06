@@ -14,8 +14,9 @@ from utils import gitAPI
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from rest_framework.response import Response
-
 import utils.gitAPI as gitAPI
+import random
+
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
 def home(request):
@@ -65,8 +66,6 @@ def home(request):
             average_mood = average_mood/n
         else:
             average_mood = -1
-        
-        print(average_mood)
             
         team_data[team] = {
             'users': users,
@@ -307,16 +306,18 @@ class MoodView(APIView):
             
             # Fetch GitlabAccessRepo by projectName
             try:
-                repo = GitlabAccessRepo.objects.get(projectName=projectName)
+                #repo = GitlabAccessRepo.objects.get(projectName=projectName)
+                repos = GitlabAccessRepo.objects.filter(projectName=projectName)
             except GitlabAccessRepo.DoesNotExist:
                 return Response({'status': 'error', 'message': 'Repo not found for the given projectName'}, 
                                 status=status.HTTP_404_NOT_FOUND)
-
-            team = repo.gitlabAccess.first()
             
-            if team:
-                mood = TeamMood.objects.create(timeStamp=datetime.datetime.now(), moodLevel=moodLevel, message=message)
-                team.moods.add(mood)
+            for repo in repos:
+                team = repo.gitlabAccess.first()
+                
+                if team:
+                    mood = TeamMood.objects.create(timeStamp=datetime.datetime.now(), moodLevel=moodLevel, message=message)
+                    team.moods.add(mood)
                 
             return Response({'status': 'success',
                             'message': 'Data received and processed successfully'},
