@@ -1,0 +1,146 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block content %}
+    <div class="grid grid-cols-2 gap-4 p-4">      
+        <!--[ Recent Users ] start-->
+
+        
+        <div class="card Recent-Users">
+            <div class="card-header">
+                <h5>Student Repository
+                    <a href="#" id="refreshLink" class="label theme-bg2 text-white f-12" >Refresh
+                    </a>
+                </h5>
+                <div id="loadingMessage" style="display: none;">Please wait, the data is being updated...</div>
+
+                <!-- Include jQuery library -->
+                <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+                <script>
+                    $(document).ready(function() {
+                    $('#refreshLink').click(function(e) {
+                        e.preventDefault(); // Prevent default link behavior (i.e., navigating to #)
+
+                        // Show loading message while the updateRepo process is running
+                        $('#loadingMessage').show();
+
+                        $.ajax({
+                        url: 'updateRepo/',
+                        method: 'GET',
+                        success: function(response) {
+                            // Handle the response from the Django view
+                            console.log('Success:', response);
+                            // Hide loading message after successful updateRepo execution
+                            $('#loadingMessage').hide();
+                            // Reload the current page after successful updateRepo execution
+                            location.reload()
+                        },
+                        error: function(xhr, status, error) {
+                            $('#loadingMessage').hide();
+                            // Handle errors
+                            console.error('Error:', error);
+                        }
+                        });
+                    });
+                    });
+                </script>
+            </div>
+        </div>
+
+
+            <div class="table-responsive">
+                <table class="table table-hover">
+
+                    <tr class="unread">
+                        <td ><img class="rounded-circle" style="width:40px;" src="{% static 'assets/images/user/avatar-1.jpg' %}"
+                            alt="activity-user">
+                        </td>
+                    </tr>
+
+
+                    <tr class="unread">  
+                        <th scope="row">Team Name</th>  
+                        <td>
+                        <h6 class="mb-1">{{ data.team.name }}</h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Number of branches</th>
+                        <td>
+                        <h6 class="text-muted">
+                            <i>{{ data.team.repo.branchNumber }}</i>
+                        </h6>
+                        </td> 
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Branches behind main</th>
+                        <td>
+                        <h6 class="text-muted">
+                            <i>{{ data.team.repo.branchBehindMax }}</i>
+                        </h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Branches ahead main</th>
+                        <td>
+                        <h6 class="text-muted">
+                            <i>{{ data.team.repo.branchAheadMax }}</i>
+                        </h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Commit Quality</th>
+                        <td>
+                        <h6 class="text-muted">
+                            <i>{{ data.team.repo.commitQuality }}</i>
+                        </h6>
+                        </td>
+                    </tr>
+                        
+                    <tr class="unread">
+                        <th scope="row">Mood Levels</th>
+                        <td>
+                        <h6 class="text-muted">
+                            {% for mood in data.team.moods %}
+                            <p>{{ mood.moodLevel }}</p>
+                        {% endfor %}
+                        </h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Mood Details</th>
+                        <td>
+                            <h6 class="text-muted">
+                                {% for mood in data.team.moods %}
+                                <p>{{ mood.message }}</p>
+                            {% endfor %}
+                            </h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <th scope="row">Time Stamp</th>
+                        <td>
+                        <h6 class="text-muted">
+                            <i>{{ data.team.repo.timeStamp }}</i>
+                        </h6>
+                        </td>
+                    </tr>
+
+                    <tr class="unread">
+                        <td>
+                        <a href="suppressTeam/?teamName={{ team.teamName }}" class="label theme-bg text-white f-12">Delete</a>
+                        </td>
+                    </tr>
+                        
+                </table>
+            </div>
+        </div>
+    
+{% endblock %}

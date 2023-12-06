@@ -26,7 +26,10 @@ class TeamMood(models.Model):
     message = models.TextField()
 
     def __str__(self):
-        return f"{self.moods.first().teamName} - {self.timeStamp}"
+        if self.moods.first():
+            return f"{self.moods.first().teamName} - {self.timeStamp}"
+        else:
+            return "No team - {self.timeStamp}"
 
 
 class TeamRepo(models.Model):

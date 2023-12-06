@@ -13,4 +13,6 @@ urlpatterns = [
     path('send_mood/', views.MoodView.as_view(), name="Mood"),
     path("add_new_token/" , views.add_new_token , name="add_new_token" ),
     path("update_repo/" , views.update_repo , name="update_repo"),   
+    path("suppressTeam/" , views.suppressTeam , name="suppressTeam"),
+    path("teamView/" , views.teamView , name="teamView"),   
 ]
