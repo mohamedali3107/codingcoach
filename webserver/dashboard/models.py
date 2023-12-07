@@ -66,9 +66,9 @@ class Coach(User):
 
 
 
-# class CoachCas(models.Model):
-#     user = models.ForeignKey(User, on_delete=models.CASCADE)
-#     teams = models.ManyToManyField(TeamTable, related_name='coaches', blank=True)
+class CoachCas(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    teams = models.ManyToManyField(TeamTable, related_name='coaches', blank=True)
 
-#     def __str__(self):
-#         return self.user.username
+    def __str__(self):
+        return self.user.username
