@@ -1,7 +1,8 @@
 import * as vscode from 'vscode';
 import * as fs from 'fs';
 
-import { showBigNotification } from './git-notification';
+import { showNotification, showBigNotification } from './git-notification';
+import { privateEncrypt } from 'crypto';
 
 export async function executeGitCommandAndGetOutput(command: string, terminal: vscode.Terminal, duration: number, path: string): Promise<string> {
     
@@ -135,7 +136,7 @@ export async function compareBranchWithMain(branchName: string, terminal: vscode
 
     await executeGitCommandAndGetOutput(command, terminal, duration, 'git_output_temp_commits.txt')
         .then((value) => out = value)
-        .catch((e) => console.log(e))
+        .catch((e) => console.log("Error in compareBranchWithMain:", e))
 
     const commits = out.split("\t");
     const commit_ahead = commits[0];
@@ -144,7 +145,7 @@ export async function compareBranchWithMain(branchName: string, terminal: vscode
 
 }
 
-export function warning_message(branchName: string, ahead_by: number, behind_by: number, comparisonBranch: string) {
+export function warning_message_status(branchName: string, ahead_by: number, behind_by: number, comparisonBranch: string) {
     let message = '';
     if (ahead_by >= 1 && behind_by ===0) {
         message += `${branchName} is ahead of ${comparisonBranch} by ${ahead_by} commits, consider merging: 
@@ -208,11 +209,11 @@ export async function branchesStatus(terminal: vscode.Terminal) {
                 }
         )
         .catch((e) => {
-            console.log('Erreur', e)
+            console.log('Error in branchesStatus:', e)
     })
 
     const [commit_ahead_main, commit_behind_main] = await compareBranchWithMain(branch, terminal);
-    const message_local = warning_message(branch, commit_ahead_main, commit_behind_main, "main")
+    const message_local = warning_message_status(branch, commit_ahead_main, commit_behind_main, "main")
     if (message_local != "") {
         showBigNotification(message_local)
     }
@@ -220,7 +221,7 @@ export async function branchesStatus(terminal: vscode.Terminal) {
     // Show a second notification after 5 minutes
     const delay1 = 5*60000;
     setTimeout(() => {
-        const message_remote = warning_message(branch, commit_ahead_remote.commit_ahead, commit_behind_remote.commit_behind, commit_ahead_remote.branch)
+        const message_remote = warning_message_status(branch, commit_ahead_remote.commit_ahead, commit_behind_remote.commit_behind, commit_ahead_remote.branch)
         if (message_remote != "") {
             showBigNotification(message_remote)
         }
@@ -256,3 +257,48 @@ export async function branchesStatus(terminal: vscode.Terminal) {
 
 }
 
+export async function workInMain(terminal: vscode.Terminal) {
+    let branchName = ""
+    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_output_temp_current_branch.txt')
+    .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
+    .catch((e) => console.log('Error in workInMain:',e))
+
+    console.log("Branch name:", branchName=="main")
+
+    if (branchName =="main") {
+
+        let branch: string = "";
+        let changes_to_be_commited: string[] = [];
+        let changes_not_staged_for_commit: string[] = [];
+        let untracked_files: string[] = [];
+
+        setInterval(async () => {
+
+            await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp_work_in_main.txt')
+            .then((value) =>
+                {
+                    const out = gitStatusCommand(value);
+                    branch = out.current_branch;
+                    changes_to_be_commited = out.changes_to_be_commited;
+                    changes_not_staged_for_commit = out.changes_not_staged_for_commit;
+                    untracked_files = out.untracked_files;
+                    }
+            )
+            .catch((e) => {
+                console.log('Error in workInMain:', e)
+        })
+
+        branch.replace(/[^a-zA-Z]/g, '');
+
+        console.log("Branch:", branch=="main");
+
+        const branch_modified = changes_to_be_commited.length + changes_not_staged_for_commit.length + untracked_files.length
+
+        console.log(branch_modified)
+
+        if (branch == "main" && branch_modified > 0) {
+            showNotification("Warning: you are working in the main branch.")
+        }
+            }, 5*60000);  // Check every 5 minutes
+    }
+}

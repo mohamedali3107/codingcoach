@@ -38,8 +38,11 @@ function activate(context) {
     // Register the terminal open event listener
     const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
         setInterval(() => {
+            (0, git_command_1.workInMain)(terminal);
+        }, 10 * 60000); // Check every 10 minutes
+        setInterval(() => {
             (0, git_command_1.branchesStatus)(terminal);
-        }, 30 * 60000); // Check every 30 minutes: 30*60000
+        }, 30 * 60000); // Check every 30 minutes
         terminals.push(terminal);
     });
     context.subscriptions.push(openTerminalListener);
