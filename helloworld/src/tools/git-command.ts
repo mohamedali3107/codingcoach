@@ -263,7 +263,7 @@ export async function workInMain(terminal: vscode.Terminal) {
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
     .catch((e) => console.log('Error in workInMain:',e))
 
-    console.log("Branch name:", branchName=="main")
+    console.log("Branch name:", branchName==="main")
 
     if (branchName =="main") {
 
@@ -290,7 +290,7 @@ export async function workInMain(terminal: vscode.Terminal) {
 
         branch.replace(/[^a-zA-Z]/g, '');
 
-        console.log("Branch:", branch=="main");
+        console.log("Branch:", branch==="main");
 
         const branch_modified = changes_to_be_commited.length + changes_not_staged_for_commit.length + untracked_files.length
 
@@ -300,5 +300,26 @@ export async function workInMain(terminal: vscode.Terminal) {
             showNotification("Warning: you are working in the main branch.")
         }
             }, 5*60000);  // Check every 5 minutes
+    }
+}
+
+export async function workOnSameBranch(terminal: vscode.Terminal, name: string) {
+    let branchName = ""
+    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_output_temp_work_on_same_branch1.txt')
+    .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
+    .catch((e) => console.log('Error in workInMain:',e))
+
+    const out = await executeGitCommandAndGetOutput("git log " + branchName, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
+    const lines = out.split("\n")
+    for (const line of lines) {
+        console.log(line)
+        if (line.includes("Author")) {
+            const commit_user = line.split(" ")[1];
+            if (commit_user !== name) {
+                showNotification("You might be working on the same branch as your teammate.")
+            } else {
+                break
+            }
+        }
     }
 }

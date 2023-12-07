@@ -36,7 +36,10 @@ function activate(context) {
     console.log('Congratulations, your extension "helloworld" is active!');
     let terminals = [];
     // Register the terminal open event listener
-    const openTerminalListener = vscode.window.onDidOpenTerminal((terminal) => {
+    const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
+        const userName = await (0, git_command_1.executeGitCommandAndGetOutput)("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt');
+        userName.replace(/[^a-zA-Z]/g, '');
+        (0, git_command_1.workOnSameBranch)(terminal, userName.split('\n')[0]);
         setInterval(() => {
             (0, git_command_1.workInMain)(terminal);
         }, 10 * 60000); // Check every 10 minutes
