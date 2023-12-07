@@ -6,7 +6,7 @@ import { showNotification, showInputPrompt } from './notification';
 export async function askStudentMood() {
 
     const message = `What is your mood today?`;
-    const instruction = `Please, enter a phrase in the box at the top of the window to describe your mood`;
+    const instruction = `Please, enter your mood in the box at the top of the window`;
     let mood_emoji: string | undefined  = ""
     let mood_phrase: string | undefined  = ""
 
