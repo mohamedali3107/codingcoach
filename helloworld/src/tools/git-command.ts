@@ -2,7 +2,6 @@ import * as vscode from 'vscode';
 import * as fs from 'fs';
 
 import { showNotification, showBigNotification } from './git-notification';
-import { privateEncrypt } from 'crypto';
 
 export async function executeGitCommandAndGetOutput(command: string, terminal: vscode.Terminal, duration: number, path: string): Promise<string> {
     

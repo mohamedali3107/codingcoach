@@ -2,8 +2,6 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 import { executeGitCommandAndGetOutput, gitStatusCommand, branchesStatus, workInMain, workOnSameBranch } from "./tools/git-command";
-import { showNotification} from "./tools/git-notification";
-import { privateEncrypt } from 'crypto';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
