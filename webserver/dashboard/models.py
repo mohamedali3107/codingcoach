@@ -3,7 +3,6 @@ from django.contrib.auth.models import User, BaseUserManager
 
 
 
-
 class Utilisateur(models.Model):
     id = models.AutoField(primary_key=True)
     #email = models.EmailField(unique=True , bla)
@@ -51,6 +50,7 @@ class TeamTable(models.Model):
     users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
     moods = models.ManyToManyField(TeamMood , related_name="moods" , blank=True ) 
     repos = models.ManyToManyField(TeamRepo , related_name="repos" , blank=True )
+
     def __str__(self):
         return self.teamName
 
@@ -60,12 +60,15 @@ class Coach(User):
 
     def __str__(self):
         return self.username
-    
 
 
-class CoachCas(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    teams = models.ManyToManyField(TeamTable, related_name='coaches', blank=True)
 
-    def __str__(self):
-        return self.user.username
+
+
+
+# class CoachCas(models.Model):
+#     user = models.ForeignKey(User, on_delete=models.CASCADE)
+#     teams = models.ManyToManyField(TeamTable, related_name='coaches', blank=True)
+
+#     def __str__(self):
+#         return self.user.username
