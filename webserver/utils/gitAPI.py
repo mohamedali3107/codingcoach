@@ -79,10 +79,6 @@ def rate_commits(project):
             malus += min((size - 30)/30, 1)
     return 20 - malus
 
-def branches(project):
-    return [branch.name for branch in project.branches.list()]
-
-
 def compute_all(server , token , project ) : 
     project = get_project(server , token , project)
 
