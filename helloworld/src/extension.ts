@@ -20,8 +20,6 @@ export function activate(context: vscode.ExtensionContext) {
         const userName = await executeGitCommandAndGetOutput("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt')
         userName.replace(/[^a-zA-Z]/g, '');
 
-        workOnSameBranch(terminal, userName.split('\n')[0])
-
         setInterval(() => {
             workInMain(terminal)
 
@@ -29,6 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
 
         setInterval(() => {
                 branchesStatus(terminal)
+                workOnSameBranch(terminal, userName.split('\n')[0])
 
         }, 30*60000); // Check every 30 minutes
 

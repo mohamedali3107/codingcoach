@@ -312,7 +312,6 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
     const out = await executeGitCommandAndGetOutput("git log " + branchName, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
     const lines = out.split("\n")
     for (const line of lines) {
-        console.log(line)
         if (line.includes("Author")) {
             const commit_user = line.split(" ")[1];
             if (commit_user !== name) {
