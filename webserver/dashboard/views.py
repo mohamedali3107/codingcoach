@@ -95,18 +95,23 @@ def dash(request):
     user = request.user
     
     # Try to retrieve CoachCas instance for the authenticated CAS user
-    coach_cas, created = CoachCas.objects.get_or_create(user=user)
+    coach = None 
+    try: 
+        coach = CoachCas.objects.get(user=user) 
+    except:
+        coach = CoachCas.objects.create(user=user)
 
 
 
-    print("COACH " , coach_cas)
 
-    print(coach_cas.user)
-    print(coach_cas.teams)
+    print("COACH " , coach)
+
+    print(coach.user)
+    print(coach.teams)
 
 
     # Retrieve all teams managed by the coach
-    teams_managed_by_coach = coach_cas.teams.all()
+    teams_managed_by_coach = coach.teams.all()
     print(teams_managed_by_coach)
     # Create dictionaries to store users, moods, and repos for each team
     team_data = {}
@@ -142,7 +147,7 @@ def dash(request):
     
     data = {}
     data['team_data'] = team_data
-    data['coach_data'] = {'user': coach.username}    
+    data['coach_data'] = {'user': coach.user.username}    
     #print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'data': data})

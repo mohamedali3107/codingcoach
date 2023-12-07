@@ -28,4 +28,4 @@ openai==0.28
 #RESTFRAMEWORK
 djangorestframework==3.14.0
 uwsgi==2.0.23
-django-cas-ng==5.0.1
+python-dotenv
