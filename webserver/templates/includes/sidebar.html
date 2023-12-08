@@ -14,10 +14,13 @@
     <div class="navbar-content scroll-div">
       <ul class="nav pcoded-inner-navbar">
         <li class="nav-item pcoded-menu-caption">
+          <a href="{% url 'dashboard:home' %}">Dashboard</a>
+        </li>
+        <li class="nav-item pcoded-menu-caption">
           <a href="{% url 'llmcoach:llmcoach' %}">LLM</a>
         </li>
         <li class="nav-item pcoded-menu-caption">
-          <a href="{% url 'dashboard:add_new_token' %}">New token</a>
+          <a href="{% url 'dashboard:add_new_token' %}">Add token</a>
         </li>
         {% if request.user.is_authenticated %}
         <li class="nav-item pcoded-menu-caption">
