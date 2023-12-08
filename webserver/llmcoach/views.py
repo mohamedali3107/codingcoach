@@ -53,7 +53,7 @@ def home(request):
 
         return render(request, 'llmcoach/index.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'conversation': conversation})
     else:
-        request.session.clear()
+        #request.session.clear()
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/index.html', {'conversation': conversation})
 
@@ -103,7 +103,7 @@ def CHAT(request):
 
         return render(request, 'llmcoach/chatgpt.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'chat': chat})
     else:
-        request.session.clear()
+        # request.session.clear()
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/chatgpt.html', {'chat': chat})
 
@@ -181,6 +181,6 @@ Helpful Answer:"""
 
         return render(request, 'llmcoach/index.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'conversation': conversation})
     else:
-        request.session.clear()
+        #request.session.clear()
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/code_evaluation.html', {'conversation': conversation})

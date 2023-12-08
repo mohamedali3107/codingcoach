@@ -71,14 +71,14 @@
   <body>
   <h1></h1>
   </body>
-  <nav>
+  {% comment %} <nav>
     <ul>
       <li><a href="{% url 'llmcoach:home' %}">Git_Assistant</a></li>
     <li><a href="{% url 'llmcoach:chat' %}">Code_Questions</a></li>
     <li><a href="{% url 'llmcoach:evaluation' %}">Code_Evaluator</a></li>
       
     </ul>
-  </nav> 
+  </nav>  {% endcomment %}
   <div id="chat" style="height: calc(70vh - 16px); color: #fff; ">
   
       {% for message in chat %}
