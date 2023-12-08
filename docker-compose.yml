@@ -3,36 +3,41 @@ version: "3.8"
 services:
   django:
     build:
-      context: ./dashboard
+      context: ./webserver
       dockerfile: DockerfileDjango
     networks:
       - codingcoachNet
     ports:
       - 8000:8000
-
-  node:
-    build:
-      context: ./node
-      dockerfile: DockerfileNode
-    networks:
-      - codingcoachNet
+    environment:
+      - DB_ENGINE=mysql
+      - DB_NAME=dashboard
+      - DB_USERNAME=root
+      - DB_PASS=root
+      - DB_HOST=mysql
+      - DB_PORT=3306
 
   dev:
     build:
       context: ./
       dockerfile: .devcontainer/DockerfileDev
     command: sleep infinity
+    environment:
+      - DB_ENGINE=mysql
+      - DB_NAME=dashboard
+      - DB_USERNAME=root
+      - DB_PASS=root
+      - DB_HOST=mysql
+      - DB_PORT=3306
     networks:
       - codingcoachNet
     volumes:
       - dev-data:/app
 
   mysql:
-    image: mysql:latest
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: dashboard
+    build:
+      context: ./
+      dockerfile: .devcontainer/DockerfileMysql
     networks:
       - codingcoachNet
     ports:

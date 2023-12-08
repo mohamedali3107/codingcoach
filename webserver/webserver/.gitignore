@@ -4,6 +4,7 @@
 *.pyo
 *.pyd
 *.db
+/migrations/
 
 # Environnement virtuel
 venv/*

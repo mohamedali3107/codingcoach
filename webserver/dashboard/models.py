@@ -3,7 +3,6 @@ from django.contrib.auth.models import User, BaseUserManager
 
 
 
-
 class Utilisateur(models.Model):
     id = models.AutoField(primary_key=True)
     #email = models.EmailField(unique=True , bla)
@@ -26,7 +25,10 @@ class TeamMood(models.Model):
     message = models.TextField()
 
     def __str__(self):
-        return f"{self.moods.first().teamName} - {self.timeStamp}"
+        if self.moods.first():
+            return f"{self.moods.first().teamName} - {self.timeStamp}"
+        else:
+            return "No team - {self.timeStamp}"
 
 
 class TeamRepo(models.Model):
@@ -48,6 +50,7 @@ class TeamTable(models.Model):
     users = models.ManyToManyField(Utilisateur, related_name='teams', blank=True)
     moods = models.ManyToManyField(TeamMood , related_name="moods" , blank=True ) 
     repos = models.ManyToManyField(TeamRepo , related_name="repos" , blank=True )
+
     def __str__(self):
         return self.teamName
 
@@ -57,7 +60,10 @@ class Coach(User):
 
     def __str__(self):
         return self.username
-    
+
+
+
+
 
 
 class CoachCas(models.Model):

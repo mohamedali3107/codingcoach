@@ -2,7 +2,7 @@
 
 {% block content %}
   <h2>Create User</h2>
-  <form method="post" action="{% url 'dashboard:createUser' %}">
+  <form method="post" action="{% url 'dashboard:create_user' %}">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Create User</button>

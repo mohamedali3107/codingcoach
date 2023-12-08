@@ -3,9 +3,9 @@ from .models import TeamMood, TeamRepo, TeamTable, Utilisateur, Coach, GitlabAcc
 
 # Register your models here.
 
-@admin.register(Coach)
-class CoachModelAdmin(admin.ModelAdmin):
-    list_display = ('username',)
+# @admin.register(Coach)
+# class CoachModelAdmin(admin.ModelAdmin):
+#     list_display = ('username',)
 
 @admin.register(Utilisateur)
 class UtilisateurModelAdmin(admin.ModelAdmin):
