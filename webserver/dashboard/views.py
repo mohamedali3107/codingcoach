@@ -166,7 +166,7 @@ def suppressTeam(request):
 
 
 @login_required(login_url="/login")
-def teamView(request):
+def team_view(request):
     # Assuming the logged-in user is a coach
     user = request.user 
     coach = CoachCas.objects.get(user=user) 
