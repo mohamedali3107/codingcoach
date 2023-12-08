@@ -164,7 +164,7 @@ AUTHENTICATION_BACKENDS = [
     'django_cas_ng.backends.CASBackend',  # Add this line
 ]
 
-CAS_SERVER_URL = 'https://cas2.centralesupelec.fr/cas/'
+CAS_SERVER_URL = 'https://cas.centralesupelec.fr/cas/'
 CAS_VERSION = '3'
 
 LOGIN_REDIRECT_URL = '/' 

@@ -151,9 +151,8 @@ def update_repo(request):
 
 @login_required(login_url="/login")
 def suppressTeam(request):
-    coach: Coach = request.user.coach
-    
-    print(coach.teams.all())
+    user = request.user
+    coach = CoachCas.objects.get(user=user)
 
     # Retrieve the team to suppress
     team_name = request.GET.get('teamName','None')

@@ -4,7 +4,10 @@ from django.shortcuts import render
 from django.shortcuts import render, redirect
 from openai import ChatCompletion
 import openai
+from django.contrib.auth.decorators import login_required , user_passes_test
 
+
+@login_required(login_url="/login")
 def home(request):
     conversation = request.session.get('conversation', [])
 
@@ -53,6 +56,8 @@ def home(request):
         request.session.clear()
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/index.html', {'conversation': conversation})
+
+@login_required(login_url="/login")
 def CHAT(request):
     chat = request.session.get('chat', [])
 
@@ -101,7 +106,8 @@ def CHAT(request):
         request.session.clear()
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/chatgpt.html', {'chat': chat})
-    
+
+@login_required(login_url="/login")
 def EVALUATION(request):
     conversation = request.session.get('conversation', [])
 
