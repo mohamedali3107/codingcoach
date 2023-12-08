@@ -321,8 +321,7 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
     const n = lines.length;
     let i = 0;
     while (i < n) {
-        if (lines[i].includes("rebase")) {
-            console.log(lines[i])
+        if (lines[i].includes("rebase") || lines[i].includes("Merge") || lines[i].includes("Rebase") || lines[i].includes("merge")) {
             let j = i+1;
             while (j < n && lines[j] !== "--------------------") {
                 j += 1
@@ -330,9 +329,6 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
             i = j+1
         } else if (!lines[i].includes("rebase") && lines[i].includes("Author")) {
             const commit_user = lines[i+1].split(" ")[0];
-            console.log([commit_user]);
-            console.log([name]);
-            console.log(i)
             if (commit_user !== name) {
                 showNotification("You might be working on the same branch as your teammate.")
             } else {
