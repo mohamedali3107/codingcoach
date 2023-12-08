@@ -1,12 +1,19 @@
 {% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block extrastyle %}
+
+<link rel="stylesheet" href="{% static 'assets/css/customForm.css' %}">
+
+{% endblock extrastyle %}
 
 {% block content %}
   <h2>Add Team</h2>
-  <form  method="post" action="{% url 'dashboard:add_new_token' %}">
+  <form method="post" action="{% url 'dashboard:add_team' %}">
     {% csrf_token %}
     <table>
       {{ form.as_table }}
     </table>
-    <button  type="submit">Submit</button>
+    <button type="submit">Submit</button>
   </form>
 {% endblock %}

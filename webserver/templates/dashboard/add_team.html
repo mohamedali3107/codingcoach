@@ -1,6 +1,8 @@
 {% extends 'layouts/base.html' %}
-
+{% load static %}
+<link rel="stylesheet" href="{% static 'assets/css/customForm.css' %}">
 {% block content %}
+
   <h2>Add Team</h2>
   <form method="post" action="{% url 'dashboard:add_team' %}">
     {% csrf_token %}
