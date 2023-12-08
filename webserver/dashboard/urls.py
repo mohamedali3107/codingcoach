@@ -6,7 +6,6 @@ app_name = "dashboard"
 
 urlpatterns = [
     path('' , views.home , name='home'),
-    path("dash/" , views.dash  , name="dashboard"),
     path('signup/' , views.sign_up , name="signup"),
     path('add_team/' , views.add_team , name="add_team"), 
     path('create_user/' ,views.create_user , name="create_user" ),

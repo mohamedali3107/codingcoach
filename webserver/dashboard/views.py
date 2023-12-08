@@ -21,16 +21,26 @@ import random
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
 def home(request):
-   # Assuming the logged-in user is a coach
-    coach : Coach = request.user.coach 
+    user = request.user
+    
+    # Try to retrieve CoachCas instance for the authenticated CAS user
+    coach = None 
+    try: 
+        coach = CoachCas.objects.get(user=user) 
+    except:
+        coach = CoachCas.objects.create(user=user)
 
-    print("COACH :" , coach )
 
-    #print(coach)
+
+
+    print("COACH " , coach)
+
+    print(coach.user)
+    print(coach.teams)
+
+
     # Retrieve all teams managed by the coach
     teams_managed_by_coach = coach.teams.all()
-    print("TEAMS  :" , teams_managed_by_coach )
-
     print(teams_managed_by_coach)
     # Create dictionaries to store users, moods, and repos for each team
     team_data = {}
@@ -85,81 +95,23 @@ def home(request):
     
     data = {}
     data['team_data'] = team_data
-    data['coach_data'] = {'user': coach.username}    
-
-    return render(request, 'dashboard/index.html', {'data': data})
-
-
-@login_required(login_url="/login")
-def dash(request):
-    user = request.user
-    
-    # Try to retrieve CoachCas instance for the authenticated CAS user
-    coach = None 
-    try: 
-        coach = CoachCas.objects.get(user=user) 
-    except:
-        coach = CoachCas.objects.create(user=user)
-
-
-
-
-    print("COACH " , coach)
-
-    print(coach.user)
-    print(coach.teams)
-
-
-    # Retrieve all teams managed by the coach
-    teams_managed_by_coach = coach.teams.all()
-    print(teams_managed_by_coach)
-    # Create dictionaries to store users, moods, and repos for each team
-    team_data = {}
-    gitlab_access_repo_info = {}
-
-    for team in teams_managed_by_coach:
-        # Retrieve users, moods, and repos for each team
-        users = team.users.all()
-        moods = team.moods.all()
-        repos = team.repos.all()
-        if repos:
-            last_repo = repos.latest('timeStamp')
-        else:
-            last_repo = repos
-        
-        # Retrieve GitLab information using the stored GitLab access token and repository URL
-        gitlab_repo = team.gitlabRepo
-
-        # Retrieve information from the GitlabAccessRepo model
-        gitlab_access_repo_info = {
-            'token': gitlab_repo.token,
-            'url': gitlab_repo.url,
-            'projectName': gitlab_repo.projectName,
-        }
-       #print("RePO  : " , gitlab_access_repo_info)
-        # Store the data in the dictionary
-        team_data[team] = {
-            'users': users,
-            'moods': moods,
-            'repo': last_repo,
-            'gitlab_access_repo_info': gitlab_access_repo_info,
-        }
-    
-    data = {}
-    data['team_data'] = team_data
     data['coach_data'] = {'user': coach.user.username}    
-    #print("TEAM DATA : " , team_data)
 
     return render(request, 'dashboard/index.html', {'data': data})
+
 
 
 @login_required(login_url="/login")
 def update_repo(request):
+    print("------------UPDATE REPO---------------")
     # Assuming the logged-in user is a coach
-    coach: Coach = request.user.coach
+    user = request.user
+    coach = CoachCas.objects.get(user=user)
 
     # Retrieve all teams managed by the coach
     teams_managed_by_coach = coach.teams.all()
+
+    print("TEAMS UNDER SUPERVISION : " , teams_managed_by_coach)
 
     for team in teams_managed_by_coach:
         # Retrieve GitLab information using the stored GitLab access token and repository URL
@@ -179,7 +131,8 @@ def update_repo(request):
             gitlab_access_repo_info['projectName']
         )
 
-        print(computed_info)
+        print("-----------------------------------------")
+        #print(computed_info)
 
         # Create an instance of TeamRepo and save the computed information
         team_repo = TeamRepo(
@@ -190,7 +143,7 @@ def update_repo(request):
             commitQuality=computed_info['rate_commit'],
         )
         team_repo.save()
-
+        print(team_repo)
         # Add the TeamRepo instance to the current team
         team.repos.add(team_repo)
 
@@ -216,7 +169,8 @@ def suppressTeam(request):
 @login_required(login_url="/login")
 def teamView(request):
     # Assuming the logged-in user is a coach
-    coach : Coach = request.user.coach 
+    user = request.user 
+    coach = CoachCas.objects.get(user=user) 
     
     # Retrieve the team
     team_name = request.GET.get('teamName','None')
@@ -253,7 +207,7 @@ def teamView(request):
         'gitlab_access_repo_info': gitlab_access_repo_info,
     }
     
-    data['coach'] = {'user': coach.username}    
+    data['coach'] = {'user': coach.user.username}    
 
     return render(request, 'dashboard/repo.html', {'data': data})
 
@@ -388,7 +342,8 @@ def add_new_token(request):
                 team_table.users.add(user)
 
             # Add TeamTable to the teams of the currently logged-in coach
-            coach = request.user.coach
+            coach = CoachCas.objects.get(user=request.user) 
+
             coach.teams.add(team_table)
 
         return redirect("/")  # Redirect to the dashboard or 
