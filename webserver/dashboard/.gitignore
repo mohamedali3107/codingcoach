@@ -1,5 +1,4 @@
-/migrations/*
-
+/migrations/
 # Django
 /__pycache__/*
 *.pyc
