@@ -306,18 +306,39 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
     let branchName = ""
     await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_output_temp_work_on_same_branch1.txt')
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
-    .catch((e) => console.log('Error in workInMain:',e))
+    .catch((e) => console.log('Error in workOnSameBranch:',e))
 
-    const out = await executeGitCommandAndGetOutput("git log " + branchName, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
+    const out = await executeGitCommandAndGetOutput(`git reflog show `  + branchName + `| while read -r line; do
+    echo "Commit details:"
+    echo "$line"  # Display the entire line from the reflog
+    commit_hash=$(echo "$line" | awk '{print $1}')  # Extract commit hash using awk (if needed)
+    echo "Author of commit $commit_hash:"
+    git show -s --format='%an <%ae>' $commit_hash  # Display author information
+    echo "--------------------"
+    done`, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
+
     const lines = out.split("\n")
-    for (const line of lines) {
-        if (line.includes("Author")) {
-            const commit_user = line.split(" ")[1];
+    const n = lines.length;
+    let i = 0;
+    while (i < n) {
+        if (lines[i].includes("rebase")) {
+            console.log(lines[i])
+            let j = i+1;
+            while (j < n && lines[j] !== "--------------------") {
+                j += 1
+            }
+            i = j+1
+        } else if (!lines[i].includes("rebase") && lines[i].includes("Author")) {
+            const commit_user = lines[i+1].split(" ")[0];
+            console.log([commit_user]);
+            console.log([name]);
+            console.log(i)
             if (commit_user !== name) {
                 showNotification("You might be working on the same branch as your teammate.")
             } else {
                 break
             }
         }
+        i += 1;
     }
 }
