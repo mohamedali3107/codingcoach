@@ -36,4 +36,3 @@ class GitlabAccessRepoForm(forms.ModelForm):
     class Meta:
         model = GitlabAccessRepo
         fields = ['url', 'token', 'projectName']
-
