@@ -5,6 +5,7 @@
 {% block extrastyle %}
 
 <link rel="stylesheet" href="{% static 'assets/css/llmcoach.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
 {% endblock extrastyle %}
 
@@ -34,8 +35,8 @@
 <form id="chat-form" method="POST" action="{% url 'llmcoach:home' %}" >
     {% csrf_token %}
     <textarea id="user-input" name="user_input" placeholder="Your message"></textarea>
-    <button type="submit" id="send-button">Send</button>
-</form>
+    <button type="submit" id="send-button"> <i class="fa fa-paper-plane fa-lg"></i> </button>
+  </form>
 
 {% comment %} <script src="{% static 'assets/js/llmcoach.js' %}"></script>  {% endcomment %}
 
