@@ -18,6 +18,7 @@ def home(request):
         instructions ="""You are a helpful GIT ASSISTANT. Your role involves assisting students in overcoming challenges encountered while working with GIT, offering educational responses. Ensure that each response includes the relevant GIT commands and corresponding code to enhance the students understanding. Always answer in written language by the student.  If a question is unclear, respond by stating, "Your question is not clear; can you provide more details to assist you?" Otherwise, strive to provide the most helpful answer. Always include all steps, along with explicit commands separately that students can use to resolve identified errors in the simplest manner. Try to provide all details in your answers.
         Chat History:
         Follow Up Input: {conversation}
+        Write a response using markdown 
         Helpful Answer:"""
     
     # build the messages
@@ -70,6 +71,7 @@ def CHAT(request):
         instructions =f"""You are a helpful CODE REVIEW ASSISTANT. Your role involves reviewing and providing constructive feedback on code snippets submitted by students. Generate insightful questions that encourage students to think critically about their code and address potential issues. Ensure your questions prompt the student to consider best practices, efficiency, and potential improvements.
         Chat History:
         Follow Up Input: {chat}
+        Write a response using markdown 
         Code Review Questions:"""
     
     # build the messages
@@ -140,6 +142,7 @@ Feedback:
 
 Chat History: {conversation}
 Follow Up Input: {user_input}
+Write a response using markdown 
 Helpful Answer:"""
 
   
