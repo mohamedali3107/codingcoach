@@ -19,16 +19,15 @@ export function activate(context: vscode.ExtensionContext) {
         userName.replace(/[^a-zA-Z]/g, '');
 
         setInterval(() => {
-            console.log("loop1")
             workInMain(terminal)
 
-        }, 15*1000); // Check every 10 minutes
+        }, 10*1000); // Check every 10 minutes
 
         setInterval(() => {
                 branchesStatus(terminal)
                 workOnSameBranch(terminal, userName.split('\n')[0])
 
-        }, 30*60000); // Check every 30 minutes
+        }, 30*1000); // Check every 30 minutes
 
         terminals.push(terminal);
 
