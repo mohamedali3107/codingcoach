@@ -1,62 +1,70 @@
 {% extends 'layouts/base.html' %}
 {% load static %}
 
+{% block extrastyle %}
+
+<link rel="stylesheet" href="{% static 'assets/css/customIndex.css' %}">
+<style>
+  /* Responsive table */
+  .table-responsive {
+      overflow-x:hidden ;
+  }
+
+  /* Word wrapping in table cells */
+  .table td, .table th {
+      white-space: normal;
+      word-wrap: break-word;
+  }
+
+  /* Responsive design for smaller screens */
+  @media (max-width: 768px) {
+      .grid {
+          grid-template-columns: 1fr; /* Single column layout on smaller screens */
+      }
+  }
+
+  /* Additional styles to separate buttons and handle long team names */
+.table .a {
+  margin-right: 120px; /* Add space between buttons */
+}
+{% comment %} 
+/* This will ensure text goes to the next line if too long */
+.table td {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+} {% endcomment %}
+
+/* This will apply a tooltip-like effect to show full name on hover */
+.table td .full-name {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+
+
+td a {
+  margin: 10px;
+  padding: 100px;
+}
+/* Responsive handling for smaller screens */
+@media screen and (max-width: 600px) {
+  .table td .full-name:hover {
+    max-width: none;
+  }
+  .table td {
+    white-space: normal;
+  }
+}
+
+</style>
+{% endblock extrastyle %}
+
 {% block content %}
     <div class="grid grid-cols-2 gap-4 p-4">
-        {% comment %} <!-- Dashboard Sidebar -->
-        <div class="col-span-1 bg-gray-200 p-4">
-            <h2 class="text-lg font-bold mb-4">Dashboard Menu</h2>
-            <ul>
-                <li><a href="#" class="text-blue-500">Home</a></li>
-                <li><a href="#" class="text-blue-500">Profile</a></li>
-                <li><a href="#" class="text-blue-500">Settings</a></li>
-            </ul>
-        </div> {% endcomment %}
-        
-        <!-- Main Content Area -->
-        {% comment %} <div class="col-span-1 bg-white p-4">
-            <h1 class="text-3xl font-bold mb-4">Hello World</h1> 
-            
-            <!-- Loop through team_data -->
-            {% for team, data in team_data.items %}
-                <div>
-                    <h2 class="text-xl font-bold">{{ team.teamName }}</h2>
-                    
-                    <!-- Display GitLab Access Repo Info -->
-                    <p>GitLab Access Repo Info:</p>
-                    <ul>
-                        <li>Token: {{ data.gitlab_access_repo_info.token }}</li>
-                        <li>URL: {{ data.gitlab_access_repo_info.url }}</li>
-                        <li>Project Name: {{ data.gitlab_access_repo_info.projectName }}</li>
-                    </ul>
-                    
-                    <!-- Display Users -->
-                    <p>Users:</p>
-                    <ul>
-                        {% for user in data.users %}
-                            <li>{{ user.username }}</li>
-                        {% endfor %}
-                    </ul>
-                    
-                    <!-- Display Moods -->
-                    <p>Moods:</p>
-                    <ul>
-                        {% for mood in data.moods %}
-                            <li>{{ mood }}</li>
-                        {% endfor %}
-                    </ul>
-                    
-                    <!-- Display Repos -->
-                    <p>Repos:</p>
-                    <ul>
-                          <li>{{ data.repo }}</li>
-                    </ul>
-                </div>
-            {% endfor %}
-        </div>
-    </div> 
-
-{% endcomment %}
 
     <div class="row">
     
@@ -186,350 +194,4 @@
               </div>
     
             {% endif %}
-    
-              
-        {% comment %} <!--[social-media section] end-->
-        <!-- [ rating list ] starts-->
-        <div class="col-xl-4 col-md-6">
-          <div class="card user-list">
-            <div class="card-header">
-              <h5>Rating</h5>
-            </div>
-            <div class="card-block">
-              <div class="row align-items-center justify-content-center m-b-20">
-                <div class="col-6">
-                  <h2 class="f-w-300 d-flex align-items-center float-left m-0">4.7 <i
-                      class="fas fa-star f-10 m-l-10 text-c-yellow"></i></h2>
-                </div>
-                <div class="col-6">
-                  <h6 class="d-flex  align-items-center float-right m-0">0.4 <i
-                      class="fas fa-caret-up text-c-green f-22 m-l-10"></i></h6>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-xl-12">
-                  <h6 class="align-items-center float-left"><i
-                      class="fas fa-star f-10 m-r-10 text-c-yellow"></i>5</h6>
-                  <h6 class="align-items-center float-right">384</h6>
-                  <div class="progress m-t-30 m-b-20" style="height: 6px;">
-                    <div class="progress-bar progress-c-theme" role="progressbar" style="width: 70%;"
-                      aria-valuenow="70" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                <div class="col-xl-12">
-                  <h6 class="align-items-center float-left"><i
-                      class="fas fa-star f-10 m-r-10 text-c-yellow"></i>4</h6>
-                  <h6 class="align-items-center float-right">145</h6>
-                  <div class="progress m-t-30  m-b-20" style="height: 6px;">
-                    <div class="progress-bar progress-c-theme" role="progressbar" style="width: 35%;"
-                      aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                <div class="col-xl-12">
-                  <h6 class="align-items-center float-left"><i
-                      class="fas fa-star f-10 m-r-10 text-c-yellow"></i>3</h6>
-                  <h6 class="align-items-center float-right">24</h6>
-                  <div class="progress m-t-30  m-b-20" style="height: 6px;">
-                    <div class="progress-bar progress-c-theme" role="progressbar" style="width: 25%;"
-                      aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                <div class="col-xl-12">
-                  <h6 class="align-items-center float-left"><i
-                      class="fas fa-star f-10 m-r-10 text-c-yellow"></i>2</h6>
-                  <h6 class="align-items-center float-right">1</h6>
-                  <div class="progress m-t-30  m-b-20" style="height: 6px;">
-                    <div class="progress-bar progress-c-theme" role="progressbar" style="width: 10%;"
-                      aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-                <div class="col-xl-12">
-                  <h6 class="align-items-center float-left"><i
-                      class="fas fa-star f-10 m-r-10 text-c-yellow"></i>1</h6>
-                  <h6 class="align-items-center float-right">0</h6>
-                  <div class="progress m-t-30  m-b-20" style="height: 6px;">
-                    <div class="progress-bar" role="progressbar" style="width:0;" aria-valuenow="0"
-                      aria-valuemin="0" aria-valuemax="100"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> {% endcomment %}
-        {% comment %} <!-- [ rating list ] end-->
-        <div class="col-xl-8 col-md-12 m-b-30">
-          <ul class="nav nav-tabs" id="myTab" role="tablist">
-            <li class="nav-item">
-              <a class="nav-link" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
-                aria-selected="false">Today</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link active show" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
-                aria-controls="profile" aria-selected="true">This
-                Week</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
-                aria-controls="contact" aria-selected="false">All</a>
-            </li>
-          </ul>
-          <div class="tab-content" id="myTabContent">
-            <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Activity</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th class="text-right"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">3:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-    
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="activity-user">Albert Andersen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Jumps over the lazy</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">2:37 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-red">Missed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-red f-10"></i>
-                    </td>
-                  </tr>
-    
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="activity-user">Silje Larsen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Dog the quick brown</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">10:23 AM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-purple">Delayed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-purple f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">4:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-    
-            </div>
-            <div class="tab-pane fade active show" id="profile" role="tabpanel" aria-labelledby="profile-tab">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Activity</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th class="text-right"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="activity-user">Albert Andersen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Jumps over the lazy</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">2:37 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-red">Missed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-red f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">3:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">4:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="activity-user">Silje Larsen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Dog the quick brown</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">10:23 AM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-purple">Delayed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-purple f-10"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-    
-            </div>
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th>User</th>
-                    <th>Activity</th>
-                    <th>Time</th>
-                    <th>Status</th>
-                    <th class="text-right"></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-3.jpg' %}" alt="activity-user">Silje Larsen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Dog the quick brown</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">10:23 AM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-purple">Delayed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-purple f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">3:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-2.jpg' %}" alt="activity-user">Albert Andersen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">Jumps over the lazy</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">2:37 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-red">Missed</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-red f-10"></i>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <h6 class="m-0"><img class="rounded-circle  m-r-10" style="width:40px;"
-                          src="{% static 'assets/images/user/avatar-1.jpg' %}" alt="activity-user">Ida Jorgensen</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">The quick brown fox</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0">4:28 PM</h6>
-                    </td>
-                    <td>
-                      <h6 class="m-0 text-c-green">Done</h6>
-                    </td>
-                    <td class="text-right"><i class="fas fa-circle text-c-green f-10"></i>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-    
-      </div> {% endcomment %}
-      <!-- [ Main Content ] end -->
 {% endblock %}
