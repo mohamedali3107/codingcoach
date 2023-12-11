@@ -44,7 +44,6 @@ htmlcov/*
 .cachier/*
 
 # Dossiers spécifiques à l'environnement de déploiement
-/static/
 /media/
 
 # Dossiers générés par Django
