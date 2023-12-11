@@ -51,7 +51,6 @@ htmlcov/*
 __pycache__/*
 db.sqlite3
 /media/*
-/static/*
 
 # Fichiers générés par la collecte statique
 .DS_Store
