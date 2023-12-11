@@ -50,9 +50,15 @@
 
         {% if not request.user.is_authenticated %}
           <ul class="nav pcoded-inner-navbar">
-            <li class=""><a href="{% url 'cas_ng_login' %}" class="">Sign in with CAS</a></li>
-            <li class=""><a href="{% url 'login' %}" class="">Sign in</a></li>
-            <li class=""><a href="{% url 'dashboard:signup' %}" class="">Sign up</a></li>
+            <li class="nav-item pcoded-menu-caption">
+              <a href="{% url 'cas_ng_login' %}" class="">Sign in with CAS</a>
+            </li>
+            <li class="nav-item pcoded-menu-caption">
+              <a href="{% url 'login' %}" class="">Sign in</a>
+            </li>
+            <li class="nav-item pcoded-menu-caption">
+              <a href="{% url 'dashboard:signup' %}" class="">Sign up</a>
+            </li>
           </ul> 
         {% endif %}
 
