@@ -191,5 +191,67 @@ td a {
                 </div>
               </div>
     
-            {% endif %}
+            {% else %}
+            <div class="card-header">
+              <h5>Dashboard
+                <a href="#" id="refreshLink" class="label theme-bg2 text-white f-12" >Refresh
+                </a>
+              </h5>
+              <div id="loadingMessage" style="display: none;">Please wait, the data is being updated...</div>
+
+              <!-- Include jQuery library -->
+              <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+              <script>
+                $(document).ready(function() {
+                  $('#refreshLink').click(function(e) {
+                    e.preventDefault(); // Prevent default link behavior (i.e., navigating to #)
+
+                    // Show loading message while the update_repo process is running
+                    $('#loadingMessage').show();
+
+                    $.ajax({
+                      url: 'update_repo/',
+                      method: 'GET',
+                      success: function(response) {
+                        // Hide loading message after successful update_repo execution
+                        $('#loadingMessage').hide();
+                        // Reload the current page after successful update_repo execution
+                        location.reload()
+                      },
+                      error: function(xhr, status, error) {
+                        $('#loadingMessage').hide();
+                        // Handle errors
+                        console.error('Error:', error);
+                      }
+                    });
+                  });
+                });
+              </script>
+            </div>
+
+            <div class="card-block px-0 py-3">
+              <div class="table-responsive">
+                <table class="table table-hover">
+
+                  <thead>
+                    <tr>
+                      <th></th>
+                      <th>Team Name</th>
+                      <th>Number of branches</th>
+                      <th>Branches behind main</th>
+                      <th>Branches ahead main</th>
+                      <th>Commit Quality</th>
+                      <th>Moods</th>
+                      <th>Time Stamp</th>
+                    </tr>
+                  </thead>
+  
+                  <tbody>
+                     
+                  </tbody>
+                </table>
+              </div>
+            </div>
+              {% endif %}
 {% endblock %}
