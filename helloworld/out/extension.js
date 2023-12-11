@@ -40,13 +40,12 @@ function activate(context) {
         const userName = await (0, git_command_1.executeGitCommandAndGetOutput)("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt');
         userName.replace(/[^a-zA-Z]/g, '');
         setInterval(() => {
-            console.log("loop1");
             (0, git_command_1.workInMain)(terminal);
-        }, 15 * 1000); // Check every 10 minutes
+        }, 10 * 1000); // Check every 10 minutes
         setInterval(() => {
             (0, git_command_1.branchesStatus)(terminal);
             (0, git_command_1.workOnSameBranch)(terminal, userName.split('\n')[0]);
-        }, 30 * 60000); // Check every 30 minutes
+        }, 30 * 1000); // Check every 30 minutes
         terminals.push(terminal);
     });
     context.subscriptions.push(openTerminalListener);

@@ -260,29 +260,25 @@ export async function workInMain(terminal: vscode.Terminal) {
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
     .catch((e) => console.log('Error in workInMain:',e))
 
-    if (branchName =="notifications") {
+    if (branchName =="main") {
 
         let branch: string = "";
         let changes_to_be_commited: string[] = [];
         let changes_not_staged_for_commit: string[] = [];
         let untracked_files: string[] = [];
 
-        setInterval(async () => {
-
-            console.log("loop2")
-
-            await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp_work_in_main.txt')
-            .then((value) =>
-                {
-                    const out = gitStatusCommand(value);
-                    branch = out.current_branch;
-                    changes_to_be_commited = out.changes_to_be_commited;
-                    changes_not_staged_for_commit = out.changes_not_staged_for_commit;
-                    untracked_files = out.untracked_files;
-                    }
-            )
-            .catch((e) => {
-                console.log('Error in workInMain:', e)
+        await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp_work_in_main.txt')
+        .then((value) =>
+            {
+                const out = gitStatusCommand(value);
+                branch = out.current_branch;
+                changes_to_be_commited = out.changes_to_be_commited;
+                changes_not_staged_for_commit = out.changes_not_staged_for_commit;
+                untracked_files = out.untracked_files;
+                }
+        )
+        .catch((e) => {
+            console.log('Error in workInMain:', e)
         })
 
         branch.replace(/[^a-zA-Z]/g, '');
@@ -292,7 +288,6 @@ export async function workInMain(terminal: vscode.Terminal) {
         if (branch == "main" && branch_modified > 0) {
             showNotification("Warning: you are working in the main branch.")
         }
-            }, 4*1000);  // Check every 5 minutes
     }
 }
 
