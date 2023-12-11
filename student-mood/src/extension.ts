@@ -36,7 +36,6 @@ export function activate(context: vscode.ExtensionContext) {
                 // If the scheduled time is in the past, schedule for the next day
                 scheduledTime.setDate(scheduledTime.getDate() + 1);
                 delay = scheduledTime.getTime() - now.getTime();
-                console.log(delay)
             } else if (delay >= -15*60000 && delay < 15*60000) {
             // Execute the command if the delay is within a certain threshold (e.g., 1 minute) 
                 askAndSendMood(terminal)

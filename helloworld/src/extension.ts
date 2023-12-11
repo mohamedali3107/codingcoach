@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
-import { executeGitCommandAndGetOutput, gitStatusCommand, branchesStatus, workInMain, workOnSameBranch } from "./tools/git-command";
+import { executeGitCommandAndGetOutput, branchesStatus, workInMain, workOnSameBranch } from "./tools/git-command";
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -17,8 +17,6 @@ export function activate(context: vscode.ExtensionContext) {
     const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
         const userName = await executeGitCommandAndGetOutput("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt')
         userName.replace(/[^a-zA-Z]/g, '');
-
-        workOnSameBranch(terminal, userName.split('\n')[0])
 
         setInterval(() => {
             workInMain(terminal)
