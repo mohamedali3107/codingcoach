@@ -39,10 +39,10 @@ function activate(context) {
     const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
         const userName = await (0, git_command_1.executeGitCommandAndGetOutput)("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt');
         userName.replace(/[^a-zA-Z]/g, '');
-        (0, git_command_1.workOnSameBranch)(terminal, userName.split('\n')[0]);
         setInterval(() => {
+            console.log("loop1");
             (0, git_command_1.workInMain)(terminal);
-        }, 10 * 60000); // Check every 10 minutes
+        }, 15 * 1000); // Check every 10 minutes
         setInterval(() => {
             (0, git_command_1.branchesStatus)(terminal);
             (0, git_command_1.workOnSameBranch)(terminal, userName.split('\n')[0]);

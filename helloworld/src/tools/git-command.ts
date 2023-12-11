@@ -177,8 +177,6 @@ export async function getBranches(terminal: vscode.Terminal) {
     let lines = out.split("\n")
     let names = []
 
-    console.log(lines)
-
     for (const line of lines) {
         const name = (line[0] !== "\t" ? line.split(" ") : line.split("\t"));
         names.push(name[name.length-1])
@@ -262,9 +260,7 @@ export async function workInMain(terminal: vscode.Terminal) {
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
     .catch((e) => console.log('Error in workInMain:',e))
 
-    console.log("Branch name:", branchName==="main")
-
-    if (branchName =="main") {
+    if (branchName =="notifications") {
 
         let branch: string = "";
         let changes_to_be_commited: string[] = [];
@@ -272,6 +268,8 @@ export async function workInMain(terminal: vscode.Terminal) {
         let untracked_files: string[] = [];
 
         setInterval(async () => {
+
+            console.log("loop2")
 
             await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp_work_in_main.txt')
             .then((value) =>
@@ -289,16 +287,12 @@ export async function workInMain(terminal: vscode.Terminal) {
 
         branch.replace(/[^a-zA-Z]/g, '');
 
-        console.log("Branch:", branch==="main");
-
         const branch_modified = changes_to_be_commited.length + changes_not_staged_for_commit.length + untracked_files.length
-
-        console.log(branch_modified)
 
         if (branch == "main" && branch_modified > 0) {
             showNotification("Warning: you are working in the main branch.")
         }
-            }, 5*60000);  // Check every 5 minutes
+            }, 4*1000);  // Check every 5 minutes
     }
 }
 
@@ -311,9 +305,9 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
     const out = await executeGitCommandAndGetOutput(`git reflog show `  + branchName + `| while read -r line; do
     echo "Commit details:"
     echo "$line"  # Display the entire line from the reflog
-    commit_hash=$(echo "$line" | awk '{print $1}')  # Extract commit hash using awk (if needed)
+    commit_hash=$(echo "$line" | awk '{print $1}')
     echo "Author of commit $commit_hash:"
-    git show -s --format='%an <%ae>' $commit_hash  # Display author information
+    git show -s --format='%an <%ae>' $commit_hash
     echo "--------------------"
     done`, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
 

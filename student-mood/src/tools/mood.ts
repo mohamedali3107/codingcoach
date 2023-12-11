@@ -42,17 +42,11 @@ export async function askAndSendMood(terminal: vscode.Terminal) {
 
     // Get the name of the user's project
     const projectName: string = await executeGitCommandAndGetOutput(`git remote show origin | awk '/Fetch URL:/ { print $3 }' | awk -F/ '{ print $(NF-1) "/" $NF }' | sed 's/\.git$//'`, terminal, 5000)
-    
-    console.log("Mood Integer:", mood_integer);
-    console.log("Message", message);
-    console.log("Project Name:", projectName);
 
     // POST request: send the mood of the student
-    const response = makePostRequest( {
+    makePostRequest( {
         "moodLevel": mood_integer,
         "message": message,
-        "projectName": projectName
+        "projectName": "baptiste.barraque/site-pascal" //projectName
     });
-
-    console.log(response)
 }
