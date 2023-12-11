@@ -18,6 +18,7 @@ from django.urls import include, path
 from . import views 
 
 app_name = "llmcoach"
+
 urlpatterns = [
     path("" , views.home , name="llmcoach") , 
     path("home" , views.home , name="home") ,

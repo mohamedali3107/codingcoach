@@ -10,25 +10,34 @@
 
 
 {% block content %}
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
-<script src="{% static 'assets/js/chat.js' %}"></script> 
+<h3>Evaluation code</h3>
 
 <div id="conversation">
-  {% for message in chat %}
+  {% for message in conversation %}
       <div class="{{ message.role }}-messages">
           <!-- Assume message.content contains markdown formatted text -->
-          <div class="markdown-content">{{ message.content | escape }}</div><endl> 
+          <div class="markdown-content" id="markdown-{{ forloop.counter }}">{{ message.content | safe }}</div>
+          <script>
+            // Utilisation de 'marked' pour rendre le contenu Markdown en HTML
+            document.getElementById('markdown-{{ forloop.counter }}').innerHTML =
+                marked.parse(document.getElementById('markdown-{{ forloop.counter }}').innerText);
+        </script> 
       </div>
   {% endfor %}
+  
 </div>
 
 
-<form id="chat-form" method="POST">
+
+
+<form id="chat-form" method="POST" action="{% url 'llmcoach:evaluation' %}" >
   {% csrf_token %}
   <textarea id="user-input" name="user_input" placeholder="Your code"></textarea>
   <button type="submit" id="send-button"> <i class="fa fa-paper-plane fa-lg"></i> </button>
 </form>
 
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static 'assets/js/llmcoach.js' %}"></script> 
 
 {% endblock %}

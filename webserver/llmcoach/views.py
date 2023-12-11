@@ -12,13 +12,13 @@ def home(request):
     conversation = request.session.get('conversation', [])
 
     if request.method == 'POST':
-        user_input = request.POST.get('user_input')
+        user_input = request.POST.get('user_input', '').replace('\n', '<br>')  # Préserver les sauts de ligne
 
         # Define your chatbot's predefined prompts
         instructions ="""You are a helpful GIT ASSISTANT. Your role involves assisting students in overcoming challenges encountered while working with GIT, offering educational responses. Ensure that each response includes the relevant GIT commands and corresponding code to enhance the students understanding. Always answer in written language by the student.  If a question is unclear, respond by stating, "Your question is not clear; can you provide more details to assist you?" Otherwise, strive to provide the most helpful answer. Always include all steps, along with explicit commands separately that students can use to resolve identified errors in the simplest manner. Try to provide all details in your answers.
         Chat History:
         Follow Up Input: {conversation}
-        Write a response using markdown 
+        Write a response using markdown and return go to line often 
         Helpful Answer:"""
     
     # build the messages
@@ -47,12 +47,15 @@ def home(request):
 
         # Append chatbot replies to the conversation
         for reply in chatbot_replies:
-            conversation.append({"role": "assistant", "content": reply})
+            formatted_reply = reply.replace('\n', '<br>')  # Préserver les sauts de ligne dans les réponses
+            conversation.append({"role": "assistant", "content": formatted_reply})
+
 
         # Update the conversation in the session
         request.session['conversation'] = conversation
 
-        return render(request, 'llmcoach/index.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'conversation': conversation})
+        return render(request, 'llmcoach/index.html', {'conversation': conversation})
+        
     else:
         #request.session.clear()
         request.session["conversation"] = [] 
@@ -65,13 +68,13 @@ def CHAT(request):
     chat = request.session.get('chat', [])
 
     if request.method == 'POST':
-        user_input = request.POST.get('user_input')
+        user_input = request.POST.get('user_input', '').replace('\n', '<br>') # Préserver les sauts de ligne
 
         # Define your chatbot's predefined prompts
         instructions =f"""You are a helpful CODE REVIEW ASSISTANT. Your role involves reviewing and providing constructive feedback on code snippets submitted by students. Generate insightful questions that encourage students to think critically about their code and address potential issues. Ensure your questions prompt the student to consider best practices, efficiency, and potential improvements.
         Chat History:
         Follow Up Input: {chat}
-        Write a response using markdown 
+        Write a response using markdown and return go to line often 
         Code Review Questions:"""
     
     # build the messages
@@ -100,16 +103,19 @@ def CHAT(request):
 
         # Append chatbot replies to the conversation
         for reply in chatbot_replies:
-            chat.append({"role": "assistant", "content": reply})
+            formatted_reply = reply.replace('\n', '<br>') # Préserver les sauts de ligne dans les réponses
+            chat.append({"role": "assistant", "content": formatted_reply})
+
+            # chat.append({"role": "assistant", "content": reply})
 
         # Update the conversation in the session
         request.session['chat'] = chat
+        return render(request, 'llmcoach/chatgpt.html', {'chat': chat})
 
-        return render(request, 'llmcoach/chatgpt.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'chat': chat})
+        # return render(request, 'llmcoach/chatgpt.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'chat': chat})
     else:
         # request.session.clear()
-        request.session["conversation"] = []
-
+        request.session["chat"] = []
         #return render(request, 'chat.html', {'conversation': conversation}) 
         return render(request, 'llmcoach/chatgpt.html', {'chat': chat})
 
@@ -118,7 +124,7 @@ def EVALUATION(request):
     conversation = request.session.get('conversation', [])
 
     if request.method == 'POST':
-        user_input = request.POST.get('user_input')
+        user_input = request.POST.get('user_input', '').replace('\n', '<br>')  # Préserver les sauts de ligne
 
         # Define your chatbot's predefined prompts
         instructions = """Review the following code rigorously and provide detailed feedback. First, check if the user's message has the correct format of a code. If the message is not code, say "sorry, I can't evaluate your input". If it is in the code format, please give a rating out of 10 and provide constructive feedback using the format 'Rating_out_of 10: ....Feedback:' in your response. Additionally, consider adding an annotation to the code if necessary.
@@ -142,7 +148,7 @@ Feedback:
 
 Chat History: {conversation}
 Follow Up Input: {user_input}
-Write a response using markdown 
+Write a response using markdown and return go to line often 
 Helpful Answer:"""
 
   
@@ -181,12 +187,13 @@ Helpful Answer:"""
             })
         # Append chatbot replies to the conversation
         for reply in chatbot_replies:
-            conversation.append({"role": "assistant", "content": reply})
+            formatted_reply = reply.replace('\n', '<br>')  # Préserver les sauts de ligne
+            conversation.append({"role": "assistant", "content": formatted_reply})
 
         # Update the conversation in the session
         request.session['conversation'] = conversation
 
-        return render(request, 'llmcoach/index.html', {'user_input': user_input, 'chatbot_replies': chatbot_replies, 'conversation': conversation})
+        return render(request, 'llmcoach/index.html', {'conversation': conversation})
     else:
         request.session["conversation"] = [] 
         #return render(request, 'chat.html', {'conversation': conversation}) 
