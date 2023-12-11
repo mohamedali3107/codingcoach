@@ -21,13 +21,13 @@ export function activate(context: vscode.ExtensionContext) {
         setInterval(() => {
             workInMain(terminal)
 
-        }, 10*1000); // Check every 10 minutes
+        }, 10*60000); // Check every 10 minutes
 
         setInterval(() => {
                 branchesStatus(terminal)
                 workOnSameBranch(terminal, userName.split('\n')[0])
 
-        }, 30*1000); // Check every 30 minutes
+        }, 30*60000); // Check every 30 minutes
 
         terminals.push(terminal);
 
