@@ -228,6 +228,7 @@ def add_team(request):
     return render(request, 'dashboard/add_team.html', {'form': form})
 
 
+@user_passes_test(lambda u: not u.is_authenticated, login_url="/")
 def sign_up(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)

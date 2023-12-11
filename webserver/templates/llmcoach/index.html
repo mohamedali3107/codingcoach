@@ -10,17 +10,18 @@
 
 
 {% block content %}
+
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="{% static 'assets/js/chat.js' %}"></script> 
+
+
 <div id="conversation">
-
-    {% for message in conversation %}
+  {% for message in chat %}
       <div class="{{ message.role }}-messages">
-        <p>{{ message.role|title }}: <span class="message-content">{{ message.content | escape }}</span></p>
-        {% if message.is_output %}
-          <span class="copy-icon" onclick="copyToClipboard(this)">📋</span>
-        {% endif %}
+          <!-- Assume message.content contains markdown formatted text -->
+          <div class="markdown-content">{{ message.content | escape }}</div><endl> 
       </div>
-    {% endfor %}
-
+  {% endfor %}
 </div>
 
 <form id="chat-form" method="POST">
@@ -29,7 +30,6 @@
     <button type="submit" id="send-button">Send</button>
 </form>
 
- <script src="{% static 'assets/js/chat.js' %}"></script> 
 
 {% endblock %}
 
