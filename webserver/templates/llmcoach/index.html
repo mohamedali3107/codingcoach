@@ -1,27 +1,35 @@
+
+
 {% extends 'layouts/base.html' %}
+{% load static %}
+{% block extrastyle %}
+
+<link rel="stylesheet" href="{% static 'assets/css/llmcoach.css' %}">
+
+{% endblock extrastyle %}
+
+
 {% block content %}
-<style> #conversation { height: 500px; border: 1px solid #000; margin-bottom: 100px; overflow-y: scroll; background-color: #fff; color: red; } .container { display: flex; } .container textarea { flex: 1; margin-right: 10px; font-size: 16px; color: red; } .container input[type="submit"] { flex-shrink: 0; background: white; color: #000; border: 0px; padding: 8px 16px; font-size: 14px; cursor: pointer; } .message { width: 100%; padding: 10px; font-size: 16px; background: #444655; color: white; } .output-messages { padding: 8px; margin: 5px; border-radius: 5px; color: white; } .copy-icon { position: absolute; top: 8px; right: 8px; cursor: pointer; } </style>
-<style> h1 { text-align: center; } </style>
-<body>
-   <div id="conversation">
-      {% for message in conversation %} 
-      {% if message.role == 'user' %} 
-      <div class="message user-message">
-         <p>You: 
-         <pre class="message-content">{{ message.content | escape }}</pre>
-         </p> 
+<div id="conversation">
+
+    {% for message in conversation %}
+      <div class="{{ message.role }}-messages">
+        <p>{{ message.role|title }}: <span class="message-content">{{ message.content | escape }}</span></p>
+        {% if message.is_output %}
+          <span class="copy-icon" onclick="copyToClipboard(this)">📋</span>
+        {% endif %}
       </div>
-      {% elif message.role == 'assistant' %} 
-      <div class="message assistant-message">
-         <p>ChatBot: 
-         <pre class="message-content">{{ message.content | escape }}</pre>
-         </p> {% if message.is_output %} <span class="copy-icon" onclick="copyToClipboard('{{ message.content | escape }}')">📋</span> {% endif %} 
-      </div>
-      {% endif %} {% endfor %} 
-   </div>
-   <form id="chat-form" method="POST">
-      {% csrf_token %} 
-      <div class="container"> <textarea rows="2" id="user-input" type="text" name="user_input" placeholder="Your message"></textarea> <input type="submit" value="Send"> </div>
-   </form>
-   <script> document.addEventListener('DOMContentLoaded', () => { const chatForm = document.getElementById('chat-form'); const userInput = document.getElementById('user-input'); const conversation = document.getElementById('conversation'); userInput.addEventListener('keypress', (event) => { if (event.key === 'Enter') { event.preventDefault(); chatForm.submit(); } }); userInput.focus(); conversation.scrollTop = conversation.scrollHeight; }); function copyToClipboard(content) { const textarea = document.createElement('textarea'); textarea.value = content; document.body.appendChild(textarea); textarea.select(); document.execCommand('copy'); document.body.removeChild(textarea); alert('Message copied to clipboard!'); } </script>
+    {% endfor %}
+
+</div>
+
+<form id="chat-form" method="POST">
+    {% csrf_token %}
+    <textarea id="user-input" name="user_input" placeholder="Your message"></textarea>
+    <button type="submit" id="send-button">Send</button>
+</form>
+
+ <script src="{% static 'assets/js/chat.js' %}"></script> 
+
 {% endblock %}
+

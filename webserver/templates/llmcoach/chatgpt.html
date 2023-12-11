@@ -1,4 +1,36 @@
+
 {% extends 'layouts/base.html' %}
+{% load static %}
+{% block extrastyle %}
+
+<link rel="stylesheet" href="{% static 'assets/css/llmcoach.css' %}">
+
+{% endblock extrastyle %}
+
+
+{% block content %}
+<div id="conversation">
+  {% for message in chat %}
+    <div class="{{ message.role }}-messages">
+      <p>{{ message.role|title }}: <pre>{{ message.content | escape }}</pre></p>
+      {% if message.is_output %}
+        <span class="copy-icon" onclick="copyToClipboard('{{ message.content | escape }}')">📋</span>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+<form id="chat-form" method="POST">
+  {% csrf_token %}
+  <textarea id="user-input" name="user_input" placeholder="Your message"></textarea>
+  <button type="submit" id="send-button">Send</button>
+</form>
+
+ <script src="{% static 'assets/js/chat.js' %}"></script> 
+
+{% endblock %}
+
+{% comment %} {% extends 'layouts/base.html' %}
 {% block content %}
 <style>
     #chat {
@@ -78,7 +110,7 @@
       <li><a href="{% url 'llmcoach:evaluation' %}">Code_Evaluator</a></li> 
       
     </ul>
-  </nav>  {% endcomment %}
+  </nav>  
   <div id="chat" style="height: calc(70vh - 16px); color: #fff; ">
   
       {% for message in chat %}
@@ -173,4 +205,5 @@
             alert('Code copied to clipboard!');
       }
   </script>  
-  {% endblock %}
+  {% endblock %} {% endcomment %}
+  
