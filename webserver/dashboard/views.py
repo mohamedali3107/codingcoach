@@ -18,6 +18,14 @@ from rest_framework.response import Response
 import utils.gitAPI as gitAPI
 import random
 
+def redirect_authenticated_user(view_func):
+    def wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("/")
+        return view_func(request, *args, **kwargs)
+    return wrapper
+
+
 
 @user_passes_test(lambda u: u.is_authenticated or u.is_superuser, login_url="/login")
 def home(request):
@@ -228,7 +236,10 @@ def add_team(request):
     return render(request, 'dashboard/add_team.html', {'form': form})
 
 
-@user_passes_test(lambda u: not u.is_authenticated, login_url="/")
+
+
+
+@redirect_authenticated_user
 def sign_up(request):
     if request.method == "POST":
         form = RegisterForm(request.POST)
