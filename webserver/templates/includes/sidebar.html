@@ -1,5 +1,9 @@
 {% comment %} {% load i18n static admin_datta %} {% endcomment %}
 
+{% block extrastyle %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+{% endblock extrastyle %}
+
 <nav class="pcoded-navbar">
   <div class="navbar-wrapper">
     <div class="navbar-brand header-logo">
@@ -15,7 +19,7 @@
       <ul class="nav pcoded-inner-navbar">
         {% if request.user.is_authenticated %}
         <li class="nav-item pcoded-menu-caption">
-          <a href="{% url 'dashboard:home' %}">Dashboard</a>
+          <a href="{% url 'dashboard:home' %}"><i class="fa fa-table"></i> Dashboard</a>
         </li>
         <li class="nav-item pcoded-menu-caption">
           <a href="{% url 'llmcoach:llmcoach' %}">LLM coach</a>
@@ -27,10 +31,10 @@
           <a href="{% url 'llmcoach:evaluation' %}">Code evaluation</a>
         </li>
         <li class="nav-item pcoded-menu-caption">
-          <a href="{% url 'dashboard:add_new_token' %}">Add token</a>
+          <a href="{% url 'dashboard:add_new_token' %}"><i class="fa fa-plus"></i> Add token</a>
         </li>
         <li class="nav-item pcoded-menu-caption">
-          <a href="{% url 'logout' %}">Log out</a>
+          <a href="{% url 'logout' %}"><i class="fa fa-sign-out"></i> Log out</a>
         </li>
         {% endif %}
 
