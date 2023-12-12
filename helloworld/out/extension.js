@@ -30,25 +30,20 @@ const vscode = __importStar(require("vscode"));
 const git_command_1 = require("./tools/git-command");
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-function activate(context) {
+async function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "helloworld" is active!');
-    let terminals = [];
-    // Register the terminal open event listener
-    const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
-        const userName = await (0, git_command_1.executeGitCommandAndGetOutput)("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt');
-        userName.replace(/[^a-zA-Z]/g, '');
-        setInterval(() => {
-            (0, git_command_1.workInMain)(terminal);
-        }, 10 * 1000); // Check every 10 minutes
-        setInterval(() => {
-            (0, git_command_1.branchesStatus)(terminal);
-            (0, git_command_1.workOnSameBranch)(terminal, userName.split('\n')[0]);
-        }, 30 * 1000); // Check every 30 minutes
-        terminals.push(terminal);
-    });
-    context.subscriptions.push(openTerminalListener);
+    const git_assistant_terminal = vscode.window.createTerminal("git-assistant");
+    const userName = await (0, git_command_1.executeGitCommandAndGetOutput)("git config user.name", git_assistant_terminal, 5000, 'git_output_temp_user_name.txt');
+    userName.replace(/[^a-zA-Z]/g, '');
+    setInterval(() => {
+        (0, git_command_1.workInMain)(git_assistant_terminal);
+    }, 10 * 60000); // Check every 10 minutes
+    setInterval(() => {
+        (0, git_command_1.branchesStatus)(git_assistant_terminal);
+        (0, git_command_1.workOnSameBranch)(git_assistant_terminal, userName.split('\n')[0]);
+    }, 30 * 60000); // Check every 30 minutes
 }
 exports.activate = activate;
 // This method is called when your extension is deactivated
