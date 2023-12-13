@@ -1,4 +1,4 @@
-## Starting
+## Starting the server
 
 1. Get the repo: `git clone the screams will start when the forest is hungry`
 
@@ -8,11 +8,11 @@
 
 4. Apply migrations: `python manage.py migrate`
 
-5. Launch: `python manage.py migrate`
+5. Launch: `python manage.py runserver`
 
 ## Structure overview
 
-1. **`DockerfileDjango`**: This file might contain instructions for Docker to build a container for your Django application.
+1. **`DockerfileDjango`**: Instructions for Docker to build a container for your Django application.
 
 2. **`dashboard`**: Main Django app directory containing various files related to the core dashboard functionality.
 
@@ -22,7 +22,7 @@
 
 5. **`manage.py`**: The Django project's command-line utility for administrative tasks.
 
-6. **`migration.sh`**: A shell script that might be used to manage database migrations.
+6. **`migration.sh`**: A shell script used to manage database migrations.
 
 7. **`requirements.txt`**: A file listing all the Python dependencies required for this Django project.
 
@@ -30,7 +30,7 @@
 
 9. **`templates`**: Directory containing HTML templates used for rendering web pages in the project. Organized into subdirectories based on functionality or page types.
 
-10. **`utils`**: Directory possibly containing utility functions or modules, like `gitAPI.py` for interacting with Git repositories.
+10. **`utils`**: Directory containing `gitAPI.py` for interacting with Git repositories.
 
 11. **`webserver`**: The main Django project directory:
     - `__init__.py`, `asgi.py`, `settings.py`, `urls.py`, `wsgi.py`: Essential files for the Django project's configuration, settings, URL routing, and ASGI (Asynchronous Server Gateway Interface) configuration.
