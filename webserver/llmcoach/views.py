@@ -193,18 +193,18 @@ Feedback:
         
         # Extract chatbot replies from the response
 
-        # chatbot_replies = [message['message']['content'] for message in response['choices'] if message['message']['role'] == 'assistant']
-        #  # Check if the response indicates that the message is not in code format
-        # if any("not in code format" in reply.lower() for reply in chatbot_replies):
-        #     conversation.append({"role": "user", "content": user_input})
-        #     conversation.append({"role": "assistant", "content": "Your message is not in code format. I can't help you, sorry."})
-        #     request.session['conversation'] = conversation
-        #     return render(request, 'llmcoach/index.html', {
-        #         'user_input': user_input,
-        #         'chatbot_replies': ["Your message is not in code format. I can't help you, sorry."],
-        #         'conversation': conversation
-        #     })
-        # Append chatbot replies to the conversation
+        chatbot_replies = [message['message']['content'] for message in response['choices'] if message['message']['role'] == 'assistant']
+         # Check if the response indicates that the message is not in code format
+        if any("not in code format" in reply.lower() for reply in chatbot_replies):
+            conversation.append({"role": "user", "content": user_input})
+            conversation.append({"role": "assistant", "content": "Your message is not in code format. I can't help you, sorry."})
+            request.session['conversation'] = conversation
+            return render(request, 'llmcoach/index.html', {
+                'user_input': user_input,
+                'chatbot_replies': ["Your message is not in code format. I can't help you, sorry."],
+                'conversation': conversation
+            })
+        Append chatbot replies to the conversation
         for reply in chatbot_replies:
             formatted_reply = reply.replace('\n', '<br>')  # Préserver les sauts de ligne
             conversation.append({"role": "assistant", "content": formatted_reply})
