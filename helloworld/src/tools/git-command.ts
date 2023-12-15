@@ -22,7 +22,8 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
     await new Promise(resolve => setTimeout(resolve, duration)); // Wait for 2 seconds (adjust as needed)
 
    // Read the contents of the temporary file (command output)
-   const output = fs.readFileSync(tempFilePath, 'utf-8');
+   const output = fs.readFileSync(tempFilePath, 'utf16le');
+   
 
    // Remove the temporary file
    fs.unlinkSync(tempFilePath);
