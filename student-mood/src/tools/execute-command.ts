@@ -11,7 +11,7 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
     }
 
     // Generate a temporary file path within the workspace folder to store the command output
-    const tempFilePath = vscode.Uri.joinPath(activeWorkspace.uri, 'git_output_temp2.txt').fsPath;
+    const tempFilePath = vscode.Uri.joinPath(activeWorkspace.uri, 'student_mood.txt').fsPath;
 
     // Run the Git command in the terminal
     terminal.sendText(`${command} > ${tempFilePath}`);

@@ -5,35 +5,28 @@ import { executeGitCommandAndGetOutput, branchesStatus, workInMain, workOnSameBr
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
-export function activate(context: vscode.ExtensionContext) {
+export async function activate(context: vscode.ExtensionContext) {
 
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "helloworld" is active!');
 
-    let terminals: vscode.Terminal[] = [];
+    // Create a new terminal to execute commands
+    const git_assistant_terminal = vscode.window.createTerminal("git-assistant");
 
-    // Register the terminal open event listener
-    const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
-        const userName = await executeGitCommandAndGetOutput("git config user.name", terminal, 5000, 'git_output_temp_user_name.txt')
-        userName.replace(/[^a-zA-Z]/g, '');
+    const userName = await executeGitCommandAndGetOutput("git config user.name", git_assistant_terminal, 5000, 'git_output_temp_user_name.txt')
+    userName.replace(/[^a-zA-Z]/g, '');
 
-        setInterval(() => {
-            workInMain(terminal)
+    setInterval(() => {
+        workInMain(git_assistant_terminal)
 
-        }, 10*60000); // Check every 10 minutes
+    }, 10*60000); // Check every 10 minutes
 
-        setInterval(() => {
-                branchesStatus(terminal)
-                workOnSameBranch(terminal, userName.split('\n')[0])
+    setInterval(() => {
+            branchesStatus(git_assistant_terminal)
+            workOnSameBranch(git_assistant_terminal, userName.split('\n')[0])
 
-        }, 30*60000); // Check every 30 minutes
-
-        terminals.push(terminal);
-
-    });
-
-    context.subscriptions.push(openTerminalListener);
+    }, 30*60000); // Check every 30 minutes
 }
 
 // This method is called when your extension is deactivated

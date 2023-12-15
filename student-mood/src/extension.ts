@@ -15,40 +15,29 @@ export function activate(context: vscode.ExtensionContext) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    
-    let terminals: vscode.Terminal[] = []; 
 
-    
-    // Register the terminal open event listener
-    const openTerminalListener = vscode.window.onDidOpenTerminal(async (terminal) => {
+    // Create a new terminal to execute commands
+    const student_mood_terminal = vscode.window.createTerminal("student-mood");
 
-        const time = { hours: 10, minutes: 30 };
+    const time = { hours: 10, minutes: 30 };
 
-        setInterval(() => {
-            const now = new Date();
-            const scheduledTime = new Date();
-            scheduledTime.setHours(time.hours, time.minutes, 0, 0); // Set hours and minutes of scheduled time
-            
-            // Calculate the delay until the scheduled time (in milliseconds)
-            let delay = scheduledTime.getTime() - now.getTime();
+    setInterval(() => {
+        const now = new Date();
+        const scheduledTime = new Date();
+        scheduledTime.setHours(time.hours, time.minutes, 0, 0); // Set hours and minutes of scheduled time
+        
+        // Calculate the delay until the scheduled time (in milliseconds)
+        let delay = scheduledTime.getTime() - now.getTime();
 
-            if (delay < -15*60000) {
-                // If the scheduled time is in the past, schedule for the next day
-                scheduledTime.setDate(scheduledTime.getDate() + 1);
-                delay = scheduledTime.getTime() - now.getTime();
-            } else if (delay >= -15*60000 && delay < 15*60000) {
-            // Execute the command if the delay is within a certain threshold (e.g., 1 minute) 
-                askAndSendMood(terminal)
-            }
-        }, 15*60000); // Check every 15 minute (adjust as needed)
-
-        terminals.push(terminal);
-
-    });
-
-    
-
-    context.subscriptions.push(openTerminalListener);
+        if (delay < -15*60000) {
+            // If the scheduled time is in the past, schedule for the next day
+            scheduledTime.setDate(scheduledTime.getDate() + 1);
+            delay = scheduledTime.getTime() - now.getTime();
+        } else if (delay >= -15*60000 && delay < 15*60000) {
+        // Execute the command if the delay is within a certain threshold (e.g., 1 minute) 
+            askAndSendMood(student_mood_terminal)
+        }
+    }, 15*60000); // Check every 15 minute (adjust as needed)
 }
 
 // This method is called when your extension is deactivated

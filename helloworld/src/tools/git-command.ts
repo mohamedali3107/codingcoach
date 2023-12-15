@@ -22,7 +22,8 @@ export async function executeGitCommandAndGetOutput(command: string, terminal: v
     await new Promise(resolve => setTimeout(resolve, duration)); // Wait for 2 seconds (adjust as needed)
 
    // Read the contents of the temporary file (command output)
-   const output = fs.readFileSync(tempFilePath, 'utf-8');
+   const output = fs.readFileSync(tempFilePath, 'utf16le');
+   
 
    // Remove the temporary file
    fs.unlinkSync(tempFilePath);
@@ -90,7 +91,7 @@ export function gitStatusCommand(output: String): GitStatusInfo {
             let j = 1;
             let file = lines[i+j];
             while (file !== "" && i+j < lines_number) {
-                if (file !== '\tgit_output_temp.txt' && !file.includes("(use")) {
+                if (!file.includes('git_assistant') && !file.includes("(use")) {
                     let file_split = (file[0] !== "\t" ? file.split(" ") : file.split("\t"));
                     untracked_files.push(file_split[file_split.length - 1]);
                 }
@@ -133,7 +134,7 @@ export async function compareBranchWithMain(branchName: string, terminal: vscode
     const duration = 5000;
     let out = ""
 
-    await executeGitCommandAndGetOutput(command, terminal, duration, 'git_output_temp_commits.txt')
+    await executeGitCommandAndGetOutput(command, terminal, duration, 'git_assistant_commits.txt')
         .then((value) => out = value)
         .catch((e) => console.log("Error in compareBranchWithMain:", e))
 
@@ -170,7 +171,7 @@ export async function getBranches(terminal: vscode.Terminal) {
     const command = "git branch"
     let out = ""
 
-    await executeGitCommandAndGetOutput(command, terminal, duration, 'git_output_temp_branch.txt')
+    await executeGitCommandAndGetOutput(command, terminal, duration, 'git_assistant_branch.txt')
         .then((value) => out = value)
         .catch((e) => console.log(e))
 
@@ -193,7 +194,7 @@ export async function branchesStatus(terminal: vscode.Terminal) {
     let commit_behind_remote = {branch: "", commit_behind: 0};
 
 
-    executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp.txt')
+    executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_assistant_status.txt')
         .then((value) =>
             {
                 const out = gitStatusCommand(value);
@@ -256,7 +257,7 @@ export async function branchesStatus(terminal: vscode.Terminal) {
 
 export async function workInMain(terminal: vscode.Terminal) {
     let branchName = ""
-    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_output_temp_current_branch.txt')
+    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_assistant_current_branch.txt')
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
     .catch((e) => console.log('Error in workInMain:',e))
 
@@ -267,7 +268,7 @@ export async function workInMain(terminal: vscode.Terminal) {
         let changes_not_staged_for_commit: string[] = [];
         let untracked_files: string[] = [];
 
-        await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_output_temp_work_in_main.txt')
+        await executeGitCommandAndGetOutput("git status", terminal, 5000, 'git_assistant_work_in_main.txt')
         .then((value) =>
             {
                 const out = gitStatusCommand(value);
@@ -293,7 +294,7 @@ export async function workInMain(terminal: vscode.Terminal) {
 
 export async function workOnSameBranch(terminal: vscode.Terminal, name: string) {
     let branchName = ""
-    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_output_temp_work_on_same_branch1.txt')
+    await executeGitCommandAndGetOutput("git branch --show-current", terminal, 3000, 'git_assistant_work_on_same_branch1.txt')
     .then((value) => branchName = value.replace(/[^a-zA-Z]/g, ''))
     .catch((e) => console.log('Error in workOnSameBranch:',e))
 
@@ -304,7 +305,7 @@ export async function workOnSameBranch(terminal: vscode.Terminal, name: string) 
     echo "Author of commit $commit_hash:"
     git show -s --format='%an <%ae>' $commit_hash
     echo "--------------------"
-    done`, terminal, 3000, 'git_output_temp_work_on_same_branch2.txt')
+    done`, terminal, 3000, 'git_assistant_work_on_same_branch2.txt')
 
     const lines = out.split("\n")
     const n = lines.length;

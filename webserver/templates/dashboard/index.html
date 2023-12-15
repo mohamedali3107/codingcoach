@@ -4,6 +4,8 @@
 {% block extrastyle %}
 
 <link rel="stylesheet" href="{% static 'assets/css/customIndex.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
   /* Responsive table */
   .table-responsive {
@@ -77,7 +79,7 @@ td a {
     
               <div class="card-header">
                 <h5>Dashboard
-                  <a href="#" id="refreshLink" class="label theme-bg2 text-white f-12" >Refresh
+                  <a href="#" id="refreshLink" class="label theme-bg2 text-white f-12" ><i class="fa fa-refresh"></i>
                   </a>
                 </h5>
                 <div id="loadingMessage" style="display: none;">Please wait, the data is being updated...</div>
@@ -181,7 +183,7 @@ td a {
 
                           <td>
                             <a href="team_view/?teamName={{ team.teamName }}" class="label theme-bg2 text-white f-12">View</a>
-                            <a href="suppressTeam/?teamName={{ team.teamName }}" class="label theme-bg text-white f-12">Delete</a>
+                            <a href="suppressTeam/?teamName={{ team.teamName }}" class="label theme-bg text-white f-12"><i class="fa fa-trash"></i></a>
                           </td>
                         </tr>
     
@@ -189,7 +191,12 @@ td a {
                     </tbody>
                   </table>
                 </div>
+                <div style="text-align: center;">
+                  <a href="{% url 'dashboard:add_new_token' %}" style="display: inline-block; font-size: 32px;">
+                      <i class="fa fa-plus-circle"></i>
+                  </a>
               </div>
+                            </div>
     
             {% else %}
             <div class="card-header">

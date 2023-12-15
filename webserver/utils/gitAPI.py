@@ -67,6 +67,7 @@ def compare_branches(project):
     return L
 
 def rate_commits(project):
+    threshold = 40
     malus = 0
     for commit in project.commits.list(get_all=False):
         size = 0
@@ -75,8 +76,8 @@ def rate_commits(project):
             for line in lines:
                 if line != '' and (line[0] == '-' or line[0] == '+'):
                     size += 1
-        if size > 40:
-            malus += min((size - 30)/30, 1)
+        if size > threshold:
+            malus += min((size - threshold)/threshold, 1)
     return 20 - malus
 
 def compute_all(server , token , project ) : 
